@@ -10,6 +10,7 @@ export const bookingSchema = z.object({
   street: z.string().min(1, "Straße ist erforderlich"),
   postalCode: z.string().min(1, "Postleitzahl ist erforderlich"),
   city: z.string().min(1, "Stadt ist erforderlich"),
+  personCount: z.number().int().min(1).default(1),
   remarks: z.string().optional().default(""),
 });
 

@@ -46,12 +46,14 @@
     "postalCode": "Postleitzahl",
     "city": "Stadt",
     "selectTrip": "Reise auswählen",
+    "personCount": "Anzahl Personen",
     "remarks": "Anmerkungen",
     "remarksPlaceholder": "Hast du besondere Wünsche oder Fragen?",
     "submit": "Anfrage absenden",
     "submitting": "Wird gesendet...",
     "success": "Deine Anfrage wurde erfolgreich gesendet! Wir melden uns bald bei dir.",
-    "error": "Leider ist ein Fehler aufgetreten. Bitte versuche es erneut."
+    "error": "Leider ist ein Fehler aufgetreten. Bitte versuche es erneut.",
+    "newInquiry": "Weitere Anfrage erstellen"
   },
   "gallery": {
     "title": "Galerie",

@@ -52,6 +52,7 @@ export function BookingForm({ trips }: BookingFormProps) {
     email: "",
     phone: "",
     dateOfBirth: "",
+    personCount: 1,
     street: "",
     postalCode: "",
     city: "",
@@ -129,6 +130,7 @@ export function BookingForm({ trips }: BookingFormProps) {
         email: "",
         phone: "",
         dateOfBirth: "",
+        personCount: 1,
         street: "",
         postalCode: "",
         city: "",
@@ -142,14 +144,24 @@ export function BookingForm({ trips }: BookingFormProps) {
     }
   }
 
-  return (
-    <form onSubmit={handleSubmit} className="mx-auto max-w-xl space-y-6">
-      {success && (
-        <div className="rounded-lg bg-green-50 p-4 text-sm text-green-800 dark:bg-green-950 dark:text-green-200">
+  if (success) {
+    return (
+      <div className="mx-auto max-w-xl space-y-6">
+        <div className="rounded-lg bg-green-50 p-6 text-center text-sm text-green-800">
           {t("success")}
         </div>
-      )}
+        <Button
+          className="w-full hover:bg-primary/80 transition-colors"
+          onClick={() => setSuccess(false)}
+        >
+          {t("newInquiry")}
+        </Button>
+      </div>
+    );
+  }
 
+  return (
+    <form onSubmit={handleSubmit} className="mx-auto max-w-xl space-y-6">
       {submitError && (
         <div className="rounded-lg bg-red-50 p-4 text-sm text-red-800 dark:bg-red-950 dark:text-red-200">
           {t("error")}
@@ -244,20 +256,36 @@ export function BookingForm({ trips }: BookingFormProps) {
         </div>
       </div>
 
-      {/* Date of birth */}
-      <div className="space-y-2">
-        <Label htmlFor="dateOfBirth">{t("dateOfBirth")}</Label>
-        <Input
-          id="dateOfBirth"
-          name="dateOfBirth"
-          type="date"
-          value={formData.dateOfBirth}
-          onChange={handleChange}
-          aria-invalid={!!errors.dateOfBirth}
-        />
-        {errors.dateOfBirth && (
-          <p className="text-sm text-destructive">{errors.dateOfBirth}</p>
-        )}
+      {/* Date of birth & person count */}
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-2">
+          <Label htmlFor="dateOfBirth">{t("dateOfBirth")}</Label>
+          <Input
+            id="dateOfBirth"
+            name="dateOfBirth"
+            type="date"
+            value={formData.dateOfBirth}
+            onChange={handleChange}
+            aria-invalid={!!errors.dateOfBirth}
+          />
+          {errors.dateOfBirth && (
+            <p className="text-sm text-destructive">{errors.dateOfBirth}</p>
+          )}
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="personCount">{t("personCount")}</Label>
+          <Input
+            id="personCount"
+            name="personCount"
+            type="number"
+            min={1}
+            value={formData.personCount}
+            onChange={(e) => {
+              const val = parseInt(e.target.value, 10);
+              setFormData((prev) => ({ ...prev, personCount: isNaN(val) ? 1 : val }));
+            }}
+          />
+        </div>
       </div>
 
       {/* Address */}

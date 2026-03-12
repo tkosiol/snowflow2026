@@ -46,12 +46,14 @@
     "postalCode": "Postal code",
     "city": "City",
     "selectTrip": "Select trip",
+    "personCount": "Number of persons",
     "remarks": "Remarks",
     "remarksPlaceholder": "Any special requests or questions?",
     "submit": "Submit inquiry",
     "submitting": "Submitting...",
     "success": "Your inquiry has been sent successfully! We'll get back to you soon.",
-    "error": "Something went wrong. Please try again."
+    "error": "Something went wrong. Please try again.",
+    "newInquiry": "Create another inquiry"
   },
   "gallery": {
     "title": "Gallery",

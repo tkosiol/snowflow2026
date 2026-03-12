@@ -28,6 +28,7 @@ export async function POST(request: Request) {
         street: data.street,
         postalCode: data.postalCode,
         city: data.city,
+        personCount: data.personCount ?? 1,
         remarks: data.remarks ?? "",
       },
     });

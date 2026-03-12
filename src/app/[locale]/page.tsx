@@ -50,7 +50,7 @@ export default async function HomePage({ params }: Props) {
           <div className="mt-10">
             <Button
               size="lg"
-              className="bg-accent text-accent-foreground hover:bg-accent/90 px-8 py-3 text-base font-semibold shadow-lg transition-transform hover:scale-105"
+              className="bg-white text-foreground [a]:hover:bg-primary hover:bg-primary hover:text-primary-foreground px-8 py-3 text-base font-semibold shadow-lg"
               render={<Link href="#trips" />}
             >
               {t("hero.cta")}
@@ -66,7 +66,7 @@ export default async function HomePage({ params }: Props) {
       {/* About Teaser */}
       <section className="mx-auto max-w-5xl px-6 py-24 sm:px-8 lg:px-12">
         <div className="text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-accent">
+          <p className="text-sm font-semibold uppercase tracking-widest text-primary/70">
             Since 2000
           </p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
@@ -82,7 +82,7 @@ export default async function HomePage({ params }: Props) {
       <section id="trips" className="scroll-mt-20 bg-secondary/50 py-24">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-12">
-            <p className="text-sm font-semibold uppercase tracking-widest text-accent">
+            <p className="text-sm font-semibold uppercase tracking-widest text-primary/70">
               {locale === "de" ? "Bereit zum Abheben?" : "Ready to go?"}
             </p>
             <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">

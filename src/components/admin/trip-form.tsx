@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
+import Image from "next/image";
+import { Upload, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -57,8 +59,36 @@ export function TripForm({ initialData, onSubmit }: TripFormProps) {
     (initialData?.translations.en?.includedItems ?? []).join(", ")
   );
 
+  const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Upload fehlgeschlagen");
+      }
+      const { url } = await res.json();
+      setImageUrl(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload fehlgeschlagen");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -175,12 +205,43 @@ export function TripForm({ initialData, onSubmit }: TripFormProps) {
           </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="imageUrl">Bild-URL</Label>
-          <Input
-            id="imageUrl"
-            value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
-          />
+          <Label>Bild</Label>
+          {imageUrl ? (
+            <div className="relative w-full max-w-sm">
+              <Image
+                src={imageUrl}
+                alt="Trip image"
+                width={400}
+                height={250}
+                className="rounded-lg border object-cover"
+              />
+              <button
+                type="button"
+                onClick={() => setImageUrl("")}
+                className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-white shadow hover:bg-destructive/80"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+          ) : (
+            <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-border px-6 py-10 transition-colors hover:border-primary/50 hover:bg-muted/50">
+              <Upload className="mb-2 size-8 text-muted-foreground" />
+              <span className="text-sm font-medium text-muted-foreground">
+                {uploading ? "Wird hochgeladen..." : "Bild auswählen oder hierher ziehen"}
+              </span>
+              <span className="mt-1 text-xs text-muted-foreground">
+                JPG, PNG, WebP (max. 10 MB)
+              </span>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/avif"
+                className="hidden"
+                onChange={handleImageUpload}
+                disabled={uploading}
+              />
+            </label>
+          )}
         </div>
       </div>
 

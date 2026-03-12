@@ -147,11 +147,17 @@ export function BookingForm({ trips }: BookingFormProps) {
         <Label htmlFor="trip-select">{t("selectTrip")}</Label>
         <Select value={formData.tripId} onValueChange={handleTripChange}>
           <SelectTrigger id="trip-select" className="w-full">
-            <SelectValue placeholder={t("selectTrip")} />
+            <SelectValue placeholder={t("selectTrip")}>
+              {(value: string | null) =>
+                value
+                  ? trips.find((trip) => trip.id === value)?.title ?? value
+                  : t("selectTrip")
+              }
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {trips.map((trip) => (
-              <SelectItem key={trip.id} value={trip.id}>
+              <SelectItem key={trip.id} value={trip.id} label={trip.title}>
                 {trip.title}
               </SelectItem>
             ))}

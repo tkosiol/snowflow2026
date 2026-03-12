@@ -43,14 +43,14 @@ export function TripCard({ trip }: TripCardProps) {
 
   return (
     <Link href={`/trips/${trip.slug}`} className="group block">
-      <Card className="h-full overflow-hidden border-0 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1">
+      <Card className="h-full overflow-hidden border-0 shadow-md transition-shadow duration-300 group-hover:shadow-xl">
         <div className="relative aspect-[16/10] w-full overflow-hidden">
           {trip.imageUrl ? (
             <Image
               src={trip.imageUrl}
               alt={trip.translation.title}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              className="object-cover"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (
@@ -81,7 +81,7 @@ export function TripCard({ trip }: TripCardProps) {
         <CardFooter>
           <Button
             variant="default"
-            className="w-full font-semibold"
+            className="w-full font-semibold group-hover:bg-primary/80 group-hover:text-primary-foreground transition-colors"
           >
             {t("details")}
           </Button>

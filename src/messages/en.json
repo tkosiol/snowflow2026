@@ -1,0 +1,63 @@
+{
+  "nav": {
+    "home": "Home",
+    "trips": "Trips",
+    "gallery": "Gallery",
+    "booking": "Book",
+    "about": "About",
+    "impressum": "Imprint",
+    "privacy": "Privacy"
+  },
+  "hero": {
+    "title": "Ski & Snowboard Trips from Berlin!",
+    "subtitle": "Affordable group trips since 2000",
+    "cta": "Discover Trips"
+  },
+  "home": {
+    "aboutTitle": "About Snowflow",
+    "aboutText": "Since 2000, Snowflow has been organizing affordable ski and snowboard trips from Berlin. We are a community of winter sports enthusiasts exploring the best slopes across Europe together.",
+    "tripsTitle": "Current Trips",
+    "noTrips": "No trips currently planned. Check back soon!"
+  },
+  "trips": {
+    "from": "from",
+    "perPerson": "per person",
+    "departure": "Departure",
+    "return": "Return",
+    "included": "What's included",
+    "location": "Ski area",
+    "accommodation": "Accommodation",
+    "logistics": "Travel",
+    "bookNow": "Book now",
+    "details": "View details"
+  },
+  "booking": {
+    "title": "Booking Inquiry",
+    "subtitle": "Fill out the form and we'll get back to you!",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "phone": "Phone",
+    "dateOfBirth": "Date of birth",
+    "street": "Street & number",
+    "postalCode": "Postal code",
+    "city": "City",
+    "selectTrip": "Select trip",
+    "remarks": "Remarks",
+    "remarksPlaceholder": "Any special requests or questions?",
+    "submit": "Submit inquiry",
+    "submitting": "Submitting...",
+    "success": "Your inquiry has been sent successfully! We'll get back to you soon.",
+    "error": "Something went wrong. Please try again."
+  },
+  "gallery": {
+    "title": "Gallery",
+    "noImages": "No images available yet."
+  },
+  "footer": {
+    "contact": "Contact",
+    "followUs": "Follow us",
+    "legal": "Legal",
+    "rights": "All rights reserved."
+  }
+}

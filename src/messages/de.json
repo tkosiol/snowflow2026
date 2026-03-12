@@ -1,0 +1,63 @@
+{
+  "nav": {
+    "home": "Start",
+    "trips": "Reisen",
+    "gallery": "Galerie",
+    "booking": "Buchen",
+    "about": "Über uns",
+    "impressum": "Impressum",
+    "privacy": "Datenschutz"
+  },
+  "hero": {
+    "title": "Ski- und Snowboardreisen aus Berlin!",
+    "subtitle": "Günstige Gruppenreisen seit 2000",
+    "cta": "Reisen entdecken"
+  },
+  "home": {
+    "aboutTitle": "Über Snowflow",
+    "aboutText": "Snowflow organisiert seit dem Jahr 2000 günstige Ski- und Snowboardreisen ab Berlin. Wir sind eine Community von Wintersportbegeisterten, die gemeinsam die besten Pisten Europas erkunden.",
+    "tripsTitle": "Aktuelle Reisen",
+    "noTrips": "Aktuell keine Reisen geplant. Schau bald wieder vorbei!"
+  },
+  "trips": {
+    "from": "ab",
+    "perPerson": "pro Person",
+    "departure": "Hinfahrt",
+    "return": "Rückfahrt",
+    "included": "Inklusivleistungen",
+    "location": "Skigebiet",
+    "accommodation": "Unterkunft",
+    "logistics": "Anreise",
+    "bookNow": "Jetzt buchen",
+    "details": "Details ansehen"
+  },
+  "booking": {
+    "title": "Buchungsanfrage",
+    "subtitle": "Fülle das Formular aus und wir melden uns bei dir!",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "dateOfBirth": "Geburtsdatum",
+    "street": "Straße & Hausnummer",
+    "postalCode": "Postleitzahl",
+    "city": "Stadt",
+    "selectTrip": "Reise auswählen",
+    "remarks": "Anmerkungen",
+    "remarksPlaceholder": "Hast du besondere Wünsche oder Fragen?",
+    "submit": "Anfrage absenden",
+    "submitting": "Wird gesendet...",
+    "success": "Deine Anfrage wurde erfolgreich gesendet! Wir melden uns bald bei dir.",
+    "error": "Leider ist ein Fehler aufgetreten. Bitte versuche es erneut."
+  },
+  "gallery": {
+    "title": "Galerie",
+    "noImages": "Noch keine Bilder vorhanden."
+  },
+  "footer": {
+    "contact": "Kontakt",
+    "followUs": "Folge uns",
+    "legal": "Rechtliches",
+    "rights": "Alle Rechte vorbehalten."
+  }
+}

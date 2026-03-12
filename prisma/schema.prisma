@@ -1,0 +1,117 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+}
+
+model Trip {
+  id            String            @id @default(cuid())
+  slug          String            @unique
+  status        TripStatus        @default(DRAFT)
+  departureDate DateTime
+  returnDate    DateTime
+  priceEur      Int
+  destination   String
+  imageUrl      String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  translations  TripTranslation[]
+  galleryImages GalleryImage[]
+  inquiries     BookingInquiry[]
+}
+
+enum TripStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model TripTranslation {
+  id                String   @id @default(cuid())
+  tripId            String
+  locale            String
+  title             String
+  subtitle          String   @default("")
+  description       String   @default("")
+  includedItems     String[] @default([])
+  locationInfo      String   @default("")
+  accommodationInfo String   @default("")
+  logisticsInfo     String   @default("")
+
+  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  @@unique([tripId, locale])
+}
+
+model GalleryImage {
+  id        String   @id @default(cuid())
+  tripId    String?
+  season    String
+  imageUrl  String
+  alt       String   @default("")
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  trip Trip? @relation(fields: [tripId], references: [id], onDelete: SetNull)
+}
+
+model BookingInquiry {
+  id          String        @id @default(cuid())
+  tripId      String
+  firstName   String
+  lastName    String
+  email       String
+  phone       String        @default("")
+  dateOfBirth String        @default("")
+  street      String        @default("")
+  postalCode  String        @default("")
+  city        String        @default("")
+  remarks     String        @default("")
+  createdAt   DateTime      @default(now())
+  status      InquiryStatus @default(NEW)
+
+  trip Trip @relation(fields: [tripId], references: [id])
+}
+
+enum InquiryStatus {
+  NEW
+  CONTACTED
+  CLOSED
+}
+
+model Page {
+  id           String            @id @default(cuid())
+  slug         String            @unique
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  translations PageTranslation[]
+}
+
+model PageTranslation {
+  id        String   @id @default(cuid())
+  pageId    String
+  locale    String
+  title     String
+  content   String   @default("")
+  updatedAt DateTime @updatedAt
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@unique([pageId, locale])
+}
+
+model SiteSettings {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+}

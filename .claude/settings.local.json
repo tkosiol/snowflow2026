@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.snowflow.de)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --turbopack --yes 2>&1)",
+      "Bash(mkdir -p /tmp/snowflow-init)",
+      "Read(//tmp/**)",
+      "Bash(npx create-next-app@latest snowflow --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --turbopack --yes)",
+      "Bash(npm install:*)",
+      "Bash(npx shadcn@latest init -d --defaults 2>&1)",
+      "Bash(npx prisma:*)",
+      "Bash(npx shadcn@latest add card input label textarea select badge tabs dialog dropdown-menu separator sheet navigation-menu avatar table 2>&1)",
+      "Bash(npx tsx:*)",
+      "Bash(npm ls:*)",
+      "Bash(npm show:*)",
+      "Bash(npx next:*)"
+    ]
+  }
+}

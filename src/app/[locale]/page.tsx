@@ -26,7 +26,7 @@ export default async function HomePage({ params }: Props) {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative flex h-[70vh] items-center justify-center overflow-hidden bg-primary">
+      <section className="relative flex h-[calc(100vh-4rem)] items-center justify-center overflow-hidden bg-primary">
         <HeroVideo />
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/40" />

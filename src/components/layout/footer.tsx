@@ -1,24 +1,36 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { Mountain } from "lucide-react";
 
 export async function Footer() {
   const t = await getTranslations();
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t bg-muted/40">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+    <footer className="border-t bg-foreground text-background">
+      <div className="mx-auto max-w-7xl px-6 py-16 sm:px-8 lg:px-12">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-4">
+          {/* Brand */}
+          <div className="sm:col-span-1">
+            <div className="flex items-center gap-2 text-lg font-extrabold">
+              <Mountain className="size-5" />
+              Snowflow
+            </div>
+            <p className="mt-3 text-sm text-background/60">
+              Ski- & Snowboardreisen aus Berlin seit 2000.
+            </p>
+          </div>
+
           {/* Contact */}
           <div>
-            <h3 className="text-sm font-semibold text-foreground">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-background/40">
               {t("footer.contact")}
             </h3>
-            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+            <ul className="mt-4 space-y-2.5 text-sm text-background/70">
               <li>
                 <a
                   href="mailto:info@snowflow.de"
-                  className="transition-colors hover:text-primary"
+                  className="transition-colors hover:text-background"
                 >
                   info@snowflow.de
                 </a>
@@ -28,16 +40,16 @@ export async function Footer() {
 
           {/* Social */}
           <div>
-            <h3 className="text-sm font-semibold text-foreground">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-background/40">
               {t("footer.followUs")}
             </h3>
-            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+            <ul className="mt-4 space-y-2.5 text-sm text-background/70">
               <li>
                 <a
                   href="#"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="transition-colors hover:text-primary"
+                  className="transition-colors hover:text-background"
                 >
                   Instagram
                 </a>
@@ -47,7 +59,7 @@ export async function Footer() {
                   href="#"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="transition-colors hover:text-primary"
+                  className="transition-colors hover:text-background"
                 >
                   Facebook
                 </a>
@@ -57,14 +69,14 @@ export async function Footer() {
 
           {/* Legal */}
           <div>
-            <h3 className="text-sm font-semibold text-foreground">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-background/40">
               {t("footer.legal")}
             </h3>
-            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+            <ul className="mt-4 space-y-2.5 text-sm text-background/70">
               <li>
                 <Link
                   href="/impressum"
-                  className="transition-colors hover:text-primary"
+                  className="transition-colors hover:text-background"
                 >
                   {t("nav.impressum")}
                 </Link>
@@ -72,7 +84,7 @@ export async function Footer() {
               <li>
                 <Link
                   href="/privacy"
-                  className="transition-colors hover:text-primary"
+                  className="transition-colors hover:text-background"
                 >
                   {t("nav.privacy")}
                 </Link>
@@ -81,7 +93,7 @@ export async function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 border-t pt-6 text-center text-sm text-muted-foreground">
+        <div className="mt-12 border-t border-background/10 pt-8 text-center text-sm text-background/40">
           &copy; {year} Snowflow. {t("footer.rights")}
         </div>
       </div>

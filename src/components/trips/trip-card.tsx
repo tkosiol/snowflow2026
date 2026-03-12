@@ -12,8 +12,9 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { CalendarDays, MapPin } from "lucide-react";
 
-interface TripCardProps {
+export interface TripCardProps {
   trip: {
     id: string;
     slug: string;
@@ -41,46 +42,51 @@ export function TripCard({ trip }: TripCardProps) {
   const t = useTranslations("trips");
 
   return (
-    <Card className="flex h-full flex-col">
-      <div className="relative aspect-[16/9] w-full overflow-hidden rounded-t-xl">
-        {trip.imageUrl ? (
-          <Image
-            src={trip.imageUrl}
-            alt={trip.translation.title}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-        ) : (
-          <div className="h-full w-full bg-gradient-to-br from-sky-400 to-blue-600" />
-        )}
-      </div>
-      <CardHeader>
-        <CardTitle>{trip.translation.title}</CardTitle>
-        {trip.translation.subtitle && (
-          <CardDescription>{trip.translation.subtitle}</CardDescription>
-        )}
-      </CardHeader>
-      <CardContent className="flex flex-1 flex-col gap-2">
-        <div className="text-muted-foreground">
-          <p>
-            {t("departure")}: {formatDate(trip.departureDate)}
-          </p>
-          <p>
-            {t("return")}: {formatDate(trip.returnDate)}
-          </p>
+    <Link href={`/trips/${trip.slug}`} className="group block">
+      <Card className="h-full overflow-hidden border-0 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1">
+        <div className="relative aspect-[16/10] w-full overflow-hidden">
+          {trip.imageUrl ? (
+            <Image
+              src={trip.imageUrl}
+              alt={trip.translation.title}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          ) : (
+            <div className="h-full w-full bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-600" />
+          )}
+          {/* Price badge */}
+          <div className="absolute bottom-3 right-3 rounded-full bg-accent px-4 py-1.5 text-sm font-bold text-accent-foreground shadow-lg">
+            {t("from")} {trip.priceEur}&euro;
+          </div>
         </div>
-        <p className="mt-auto text-lg font-semibold">
-          {t("from")} {trip.priceEur}&nbsp;&euro; {t("perPerson")}
-        </p>
-      </CardContent>
-      <CardFooter>
-        <Link href={`/trips/${trip.slug}`} className="w-full">
-          <Button variant="outline" className="w-full">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-xl">{trip.translation.title}</CardTitle>
+          {trip.translation.subtitle && (
+            <CardDescription className="flex items-center gap-1.5">
+              <MapPin className="size-3.5" />
+              {trip.translation.subtitle}
+            </CardDescription>
+          )}
+        </CardHeader>
+        <CardContent className="pb-2">
+          <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+            <CalendarDays className="size-3.5" />
+            <span>
+              {formatDate(trip.departureDate)} &ndash; {formatDate(trip.returnDate)}
+            </span>
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Button
+            variant="default"
+            className="w-full font-semibold"
+          >
             {t("details")}
           </Button>
-        </Link>
-      </CardFooter>
-    </Card>
+        </CardFooter>
+      </Card>
+    </Link>
   );
 }

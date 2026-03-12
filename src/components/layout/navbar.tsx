@@ -13,7 +13,7 @@ import {
   SheetTitle,
   SheetClose,
 } from "@/components/ui/sheet";
-import { MenuIcon } from "lucide-react";
+import { MenuIcon, Mountain } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -30,24 +30,25 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 sm:px-8 lg:px-12">
         {/* Logo */}
-        <Link href="/" className="text-xl font-bold text-primary">
+        <Link href="/" className="flex items-center gap-2 text-xl font-extrabold tracking-tight text-primary">
+          <Mountain className="size-5" />
           Snowflow
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden items-center gap-6 md:flex">
+        <nav className="hidden items-center gap-1 md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.key}
               href={link.href}
               className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
+                "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                 pathname === link.href
-                  ? "text-primary"
-                  : "text-muted-foreground"
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
               {t(link.key)}
@@ -73,11 +74,12 @@ export function Navbar() {
             />
             <SheetContent side="right" className="w-72">
               <SheetHeader>
-                <SheetTitle className="text-left text-lg font-bold text-primary">
+                <SheetTitle className="flex items-center gap-2 text-left text-lg font-extrabold text-primary">
+                  <Mountain className="size-4" />
                   Snowflow
                 </SheetTitle>
               </SheetHeader>
-              <nav className="flex flex-col gap-2 px-4">
+              <nav className="flex flex-col gap-1 px-4">
                 {navLinks.map((link) => (
                   <SheetClose
                     key={link.key}
@@ -85,10 +87,10 @@ export function Navbar() {
                       <Link
                         href={link.href}
                         className={cn(
-                          "rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
+                          "rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                           pathname === link.href
-                            ? "bg-accent text-primary"
-                            : "text-muted-foreground"
+                            ? "bg-primary/10 text-primary"
+                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
                         )}
                       >
                         {t(link.key)}
@@ -97,7 +99,7 @@ export function Navbar() {
                   />
                 ))}
               </nav>
-              <div className="mt-4 px-7">
+              <div className="mt-6 px-7">
                 <LanguageSwitcher />
               </div>
             </SheetContent>

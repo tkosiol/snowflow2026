@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
 import { TripCard } from "@/components/trips/trip-card";
+import { HeroVideo } from "@/components/layout/hero-video";
 import { Button } from "@/components/ui/button";
 
 type Props = {
@@ -26,28 +27,7 @@ export default async function HomePage({ params }: Props) {
     <>
       {/* Hero Section */}
       <section className="relative flex h-[70vh] items-center justify-center overflow-hidden bg-primary">
-        {/* Desktop video */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 hidden h-full w-full object-cover md:block"
-          poster=""
-        >
-          <source src="/videos/hero-desktop.mp4" type="video/mp4" />
-        </video>
-        {/* Mobile video */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 block h-full w-full object-cover md:hidden"
-          poster=""
-        >
-          <source src="/videos/hero-mobile.mp4" type="video/mp4" />
-        </video>
+        <HeroVideo />
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/40" />
         <div className="relative z-10 text-center text-white px-4">

@@ -52,4 +52,4 @@ jobs:
             docker compose pull
             docker compose up -d
             sleep 3
-            docker exec snowflow2026 npx prisma migrate deploy
+            docker exec snowflow2026 sh -c 'DATABASE_URL=$DATABASE_URL npx prisma migrate deploy'

@@ -20,6 +20,9 @@
     "noTrips": "No trips currently planned. Check back soon!"
   },
   "trips": {
+    "title": "All Trips",
+    "subtitle": "Discover our current ski and snowboard trips",
+    "noTrips": "No trips currently planned. Check back soon!",
     "from": "from",
     "perPerson": "per person",
     "departure": "Departure",

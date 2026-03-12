@@ -20,6 +20,9 @@
     "noTrips": "Aktuell keine Reisen geplant. Schau bald wieder vorbei!"
   },
   "trips": {
+    "title": "Alle Reisen",
+    "subtitle": "Entdecke unsere aktuellen Ski- und Snowboardreisen",
+    "noTrips": "Aktuell keine Reisen geplant. Schau bald wieder vorbei!",
     "from": "ab",
     "perPerson": "pro Person",
     "departure": "Hinfahrt",

@@ -20,6 +20,20 @@ interface BookingTrip {
   id: string;
   title: string;
   slug: string;
+  departureDate: string;
+  returnDate: string;
+}
+
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}.${month}.${year}`;
+}
+
+function tripLabel(trip: BookingTrip): string {
+  return `${trip.title} (${formatDate(trip.departureDate)} – ${formatDate(trip.returnDate)})`;
 }
 
 interface BookingFormProps {
@@ -148,17 +162,17 @@ export function BookingForm({ trips }: BookingFormProps) {
         <Select value={formData.tripId} onValueChange={handleTripChange}>
           <SelectTrigger id="trip-select" className="w-full">
             <SelectValue placeholder={t("selectTrip")}>
-              {(value: string | null) =>
-                value
-                  ? trips.find((trip) => trip.id === value)?.title ?? value
-                  : t("selectTrip")
-              }
+              {(value: string | null) => {
+                if (!value) return t("selectTrip");
+                const trip = trips.find((tr) => tr.id === value);
+                return trip ? tripLabel(trip) : value;
+              }}
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {trips.map((trip) => (
-              <SelectItem key={trip.id} value={trip.id} label={trip.title}>
-                {trip.title}
+              <SelectItem key={trip.id} value={trip.id} label={tripLabel(trip)}>
+                {tripLabel(trip)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -303,7 +317,7 @@ export function BookingForm({ trips }: BookingFormProps) {
       </div>
 
       {/* Submit */}
-      <Button type="submit" className="w-full" disabled={submitting}>
+      <Button type="submit" className="w-full hover:bg-primary/80 transition-colors" disabled={submitting}>
         {submitting ? t("submitting") : t("submit")}
       </Button>
     </form>

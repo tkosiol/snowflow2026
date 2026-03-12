@@ -35,6 +35,8 @@ export default async function BookingPage({ params }: BookingPageProps) {
     id: trip.id,
     title: trip.translations[0]?.title ?? trip.destination,
     slug: trip.slug,
+    departureDate: trip.departureDate.toISOString(),
+    returnDate: trip.returnDate.toISOString(),
   }));
 
   return (

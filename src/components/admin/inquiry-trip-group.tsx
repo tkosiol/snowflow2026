@@ -17,7 +17,7 @@ import {
 import { InquiryStatusSelect } from "@/components/admin/inquiry-status-select";
 import { InquiryPersonCount } from "@/components/admin/inquiry-person-count";
 import { InquiryNotes } from "@/components/admin/inquiry-notes";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ChevronDown } from "lucide-react";
 
 export interface InquiryData {
   id: string;
@@ -81,6 +81,90 @@ function StatusBadge({ status, count, persons }: { status: string; count: number
     <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[status]}`}>
       {statusLabels[status]}: {count} ({persons})
     </span>
+  );
+}
+
+function InquiryRow({ inquiry }: { inquiry: InquiryData }) {
+  const [expanded, setExpanded] = useState(false);
+
+  function handleRowClick(e: React.MouseEvent) {
+    // Don't toggle if clicking on interactive elements
+    const target = e.target as HTMLElement;
+    if (target.closest("select, input, textarea, button, [data-slot='select-trigger'], [data-slot='select-content']")) {
+      return;
+    }
+    setExpanded(!expanded);
+  }
+
+  return (
+    <>
+      <TableRow
+        className="cursor-pointer hover:bg-gray-50 transition-colors"
+        onClick={handleRowClick}
+      >
+        <TableCell className="font-medium whitespace-nowrap">
+          <div className="flex items-center gap-1.5">
+            {expanded ? (
+              <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
+            ) : (
+              <ChevronRight className="size-3.5 text-muted-foreground shrink-0" />
+            )}
+            {inquiry.firstName} {inquiry.lastName}
+          </div>
+        </TableCell>
+        <TableCell className="text-sm">{inquiry.email}</TableCell>
+        <TableCell className="text-sm whitespace-nowrap">
+          {formatDate(inquiry.createdAt)}
+        </TableCell>
+        <TableCell onClick={(e) => e.stopPropagation()}>
+          <InquiryStatusSelect id={inquiry.id} currentStatus={inquiry.status} />
+        </TableCell>
+        <TableCell onClick={(e) => e.stopPropagation()}>
+          <InquiryPersonCount id={inquiry.id} currentCount={inquiry.personCount} />
+        </TableCell>
+      </TableRow>
+      {expanded && (
+        <TableRow className="bg-gray-50/50">
+          <TableCell colSpan={5} className="p-0">
+            <div className="grid grid-cols-2 gap-x-8 gap-y-3 px-6 py-4 text-sm">
+              {inquiry.dateOfBirth && (
+                <div>
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Geburtsdatum</span>
+                  <p>{formatDate(inquiry.dateOfBirth)}</p>
+                </div>
+              )}
+              {inquiry.phone && (
+                <div>
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Telefon</span>
+                  <p>{inquiry.phone}</p>
+                </div>
+              )}
+              {(inquiry.street || inquiry.postalCode || inquiry.city) && (
+                <div>
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Adresse</span>
+                  {inquiry.street && <p>{inquiry.street}</p>}
+                  {(inquiry.postalCode || inquiry.city) && (
+                    <p>{inquiry.postalCode} {inquiry.city}</p>
+                  )}
+                </div>
+              )}
+              {inquiry.remarks && (
+                <div>
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Anmerkungen</span>
+                  <p className="text-muted-foreground">{inquiry.remarks}</p>
+                </div>
+              )}
+              <div className="col-span-2" onClick={(e) => e.stopPropagation()}>
+                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Notizen</span>
+                <div className="mt-1">
+                  <InquiryNotes id={inquiry.id} currentNotes={inquiry.notes} />
+                </div>
+              </div>
+            </div>
+          </TableCell>
+        </TableRow>
+      )}
+    </>
   );
 }
 
@@ -171,69 +255,24 @@ export function InquiryTripGroup({ tripTitle, departureDate, returnDate, inquiri
             <TableRow>
               <SortHeader label="Name" sortKeyName="name" />
               <SortHeader label="Email" sortKeyName="email" />
-              <TableHead>Telefon</TableHead>
-              <TableHead>Adresse</TableHead>
               <SortHeader label="Datum" sortKeyName="createdAt" />
               <SortHeader label="Status" sortKeyName="status" />
               <SortHeader label="Pers." sortKeyName="personCount" />
-              <TableHead className="min-w-[200px]">Notizen</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {sorted.map((inquiry) => (
-              <TableRow key={inquiry.id}>
-                <TableCell className="font-medium whitespace-nowrap">
-                  {inquiry.firstName} {inquiry.lastName}
-                  {inquiry.dateOfBirth && (
-                    <div className="text-xs text-muted-foreground">
-                      geb. {formatDate(inquiry.dateOfBirth)}
-                    </div>
-                  )}
-                </TableCell>
-                <TableCell className="text-sm">{inquiry.email}</TableCell>
-                <TableCell className="text-sm whitespace-nowrap">{inquiry.phone}</TableCell>
-                <TableCell className="text-sm">
-                  {inquiry.street && (
-                    <div>{inquiry.street}</div>
-                  )}
-                  {(inquiry.postalCode || inquiry.city) && (
-                    <div>{inquiry.postalCode} {inquiry.city}</div>
-                  )}
-                </TableCell>
-                <TableCell className="text-sm whitespace-nowrap">
-                  {formatDate(inquiry.createdAt)}
-                </TableCell>
-                <TableCell>
-                  <InquiryStatusSelect id={inquiry.id} currentStatus={inquiry.status} />
-                </TableCell>
-                <TableCell>
-                  <InquiryPersonCount id={inquiry.id} currentCount={inquiry.personCount} />
-                </TableCell>
-                <TableCell>
-                  <InquiryNotes id={inquiry.id} currentNotes={inquiry.notes} />
-                </TableCell>
-              </TableRow>
+              <InquiryRow key={inquiry.id} inquiry={inquiry} />
             ))}
             {inquiries.length === 0 && (
               <TableRow>
-                <TableCell colSpan={8} className="text-center py-6 text-muted-foreground">
+                <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
                   Keine Anfragen.
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
-        {inquiries.some((i) => i.remarks) && (
-          <div className="border-t p-4 space-y-2">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Anmerkungen der Teilnehmer</p>
-            {inquiries.filter((i) => i.remarks).map((i) => (
-              <div key={i.id} className="text-sm">
-                <span className="font-medium">{i.firstName} {i.lastName}:</span>{" "}
-                <span className="text-muted-foreground">{i.remarks}</span>
-              </div>
-            ))}
-          </div>
-        )}
       </CollapsibleContent>
     </Collapsible>
   );

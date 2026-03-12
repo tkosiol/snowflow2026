@@ -26,18 +26,23 @@ export async function PATCH(request: Request) {
 
   try {
     const body = await request.json();
-    const { id, status } = body;
+    const { id, status, personCount, notes } = body;
 
-    if (!id || !status) {
+    if (!id) {
       return NextResponse.json(
-        { error: "id and status are required" },
+        { error: "id is required" },
         { status: 400 }
       );
     }
 
+    const data: Record<string, unknown> = {};
+    if (status !== undefined) data.status = status;
+    if (personCount !== undefined) data.personCount = personCount;
+    if (notes !== undefined) data.notes = notes;
+
     const inquiry = await prisma.bookingInquiry.update({
       where: { id },
-      data: { status },
+      data,
     });
 
     return NextResponse.json(inquiry);

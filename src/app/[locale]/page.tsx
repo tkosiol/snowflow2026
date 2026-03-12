@@ -5,6 +5,7 @@ import { TripCard } from "@/components/trips/trip-card";
 import { HeroVideo } from "@/components/layout/hero-video";
 import { Button } from "@/components/ui/button";
 import { ArrowDown } from "lucide-react";
+import Image from "next/image";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -32,10 +33,18 @@ export default async function HomePage({ params }: Props) {
         {/* Gradient overlay for depth */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/60" />
         <div className="relative z-10 flex flex-col items-center text-center text-white px-4">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl drop-shadow-lg">
+          <Image
+            src="/images/snowflow-logo-inv.svg"
+            alt="Snowflow"
+            width={586}
+            height={230}
+            className="w-[280px] sm:w-[380px] md:w-[460px] lg:w-[540px] h-auto drop-shadow-2xl"
+            priority
+          />
+          <p className="mt-6 max-w-2xl text-xl font-semibold text-white/95 sm:text-2xl md:text-3xl drop-shadow-lg tracking-wide">
             {t("hero.title")}
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg font-medium text-white/90 sm:text-xl md:text-2xl drop-shadow">
+          </p>
+          <p className="mt-3 text-base font-medium text-white/70 sm:text-lg md:text-xl drop-shadow">
             {t("hero.subtitle")}
           </p>
           <div className="mt-10">

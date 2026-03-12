@@ -13,8 +13,9 @@ import {
   SheetTitle,
   SheetClose,
 } from "@/components/ui/sheet";
-import { MenuIcon, Mountain } from "lucide-react";
+import { MenuIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 const navLinks = [
   { href: "/", key: "home" },
@@ -33,9 +34,16 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 sm:px-8 lg:px-12">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 text-xl font-extrabold tracking-tight text-primary">
-          <Mountain className="size-5" />
-          Snowflow
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/images/snowflow-logo-inv.svg"
+            alt="Snowflow"
+            width={130}
+            height={52}
+            className="h-8 w-auto"
+            style={{ filter: "brightness(0) saturate(100%) invert(21%) sepia(57%) saturate(1800%) hue-rotate(210deg) brightness(85%)" }}
+            priority
+          />
         </Link>
 
         {/* Desktop Navigation */}
@@ -74,9 +82,15 @@ export function Navbar() {
             />
             <SheetContent side="right" className="w-72">
               <SheetHeader>
-                <SheetTitle className="flex items-center gap-2 text-left text-lg font-extrabold text-primary">
-                  <Mountain className="size-4" />
-                  Snowflow
+                <SheetTitle className="text-left">
+                  <Image
+                    src="/images/snowflow-logo-inv.svg"
+                    alt="Snowflow"
+                    width={110}
+                    height={44}
+                    className="h-7 w-auto"
+                    style={{ filter: "brightness(0) saturate(100%) invert(21%) sepia(57%) saturate(1800%) hue-rotate(210deg) brightness(85%)" }}
+                  />
                 </SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col gap-1 px-4">

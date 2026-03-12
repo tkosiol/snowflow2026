@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { Mountain } from "lucide-react";
+import Image from "next/image";
 
 export async function Footer() {
   const t = await getTranslations();
@@ -12,10 +12,13 @@ export async function Footer() {
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-4">
           {/* Brand */}
           <div className="sm:col-span-1">
-            <div className="flex items-center gap-2 text-lg font-extrabold">
-              <Mountain className="size-5" />
-              Snowflow
-            </div>
+            <Image
+              src="/images/snowflow-logo-inv.svg"
+              alt="Snowflow"
+              width={130}
+              height={52}
+              className="h-8 w-auto opacity-90"
+            />
             <p className="mt-3 text-sm text-background/60">
               Ski- & Snowboardreisen aus Berlin seit 2000.
             </p>

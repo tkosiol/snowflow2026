@@ -35,7 +35,7 @@ export const tripSchema = z.object({
       logisticsInfo: z.string().optional().default(""),
     }),
     en: z.object({
-      title: z.string().min(1),
+      title: z.string().optional().default(""),
       subtitle: z.string().optional().default(""),
       description: z.string().optional().default(""),
       includedItems: z.array(z.string()).optional().default([]),

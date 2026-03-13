@@ -6,7 +6,13 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 const nextConfig: NextConfig = {
   output: "standalone",
   images: {
-    remotePatterns: [],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "snowflow.tillkosiol.de",
+        pathname: "/uploads/**",
+      },
+    ],
   },
 };
 

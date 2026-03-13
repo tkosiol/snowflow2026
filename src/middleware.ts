@@ -8,7 +8,7 @@ export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Skip i18n for admin routes and API routes
-  if (pathname.startsWith("/admin") || pathname.startsWith("/api")) {
+  if (pathname.startsWith("/admin") || pathname.startsWith("/api") || pathname.startsWith("/uploads")) {
     return NextResponse.next();
   }
 

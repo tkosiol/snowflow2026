@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { TripCard } from "@/components/trips/trip-card";
@@ -5,6 +6,26 @@ import { TripCard } from "@/components/trips/trip-card";
 type Props = {
   params: Promise<{ locale: string }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "trips" });
+
+  const title = t("title");
+  const description =
+    locale === "de"
+      ? "Alle aktuellen Ski- und Snowboardreisen von Snowflow auf einen Blick. Finde deine naechste Reise ab Berlin."
+      : "All current ski and snowboard trips from Snowflow at a glance. Find your next trip from Berlin.";
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title: `${title} | Snowflow`,
+      description,
+    },
+  };
+}
 
 export default async function TripsPage({ params }: Props) {
   const { locale } = await params;

@@ -15,9 +15,49 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Snowflow - Ski- und Snowboardreisen aus Berlin",
+  metadataBase: new URL("https://snowflow.tillkosiol.de"),
+  title: {
+    default: "Snowflow - Ski- & Snowboardreisen aus Berlin seit 2000",
+    template: "%s | Snowflow",
+  },
   description:
-    "Snowflow organisiert günstige Ski- und Snowboardreisen ab Berlin seit 2000.",
+    "Snowflow organisiert seit 2000 unvergessliche Ski- und Snowboardreisen ab Berlin. Gemeinsam auf die Piste - guenstig, unkompliziert und mit bester Community.",
+  keywords: [
+    "Skireisen",
+    "Snowboardreisen",
+    "Berlin",
+    "Skiurlaub",
+    "Snowflow",
+    "guenstige Skireisen",
+    "Ski Community Berlin",
+    "Snowboard Community",
+    "Winterurlaub",
+  ],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "de_DE",
+    siteName: "Snowflow",
+    title: "Snowflow - Ski- & Snowboardreisen aus Berlin seit 2000",
+    description:
+      "Seit 2000 organisiert Snowflow unvergessliche Ski- und Snowboardreisen ab Berlin. Gemeinsam auf die Piste!",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Snowflow - Ski- & Snowboardreisen aus Berlin seit 2000",
+    description:
+      "Seit 2000 organisiert Snowflow unvergessliche Ski- und Snowboardreisen ab Berlin. Gemeinsam auf die Piste!",
+  },
 };
 
 export default function RootLayout({

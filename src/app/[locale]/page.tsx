@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
@@ -10,6 +11,29 @@ import Image from "next/image";
 type Props = {
   params: Promise<{ locale: string }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "hero" });
+
+  const title =
+    locale === "de"
+      ? "Snowflow - Ski- & Snowboardreisen aus Berlin"
+      : "Snowflow - Ski & Snowboard Trips from Berlin";
+  const description =
+    locale === "de"
+      ? "Seit 2000 organisiert Snowflow unvergessliche Ski- und Snowboardreisen ab Berlin. Gemeinsam auf die Piste - guenstig, unkompliziert und mit bester Community."
+      : "Since 2000, Snowflow has been organizing unforgettable ski and snowboard trips from Berlin. Hit the slopes together!";
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+    },
+  };
+}
 
 export default async function HomePage({ params }: Props) {
   const { locale } = await params;

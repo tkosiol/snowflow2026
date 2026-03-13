@@ -11,8 +11,18 @@ export async function generateMetadata({ params }: BookingPageProps) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "booking" });
 
+  const description =
+    locale === "de"
+      ? "Buche jetzt deine naechste Ski- oder Snowboardreise mit Snowflow. Einfach Reise auswaehlen, Formular ausfuellen und los gehts!"
+      : "Book your next ski or snowboard trip with Snowflow. Choose a trip, fill in the form, and you're set!";
+
   return {
-    title: `${t("title")} - Snowflow`,
+    title: t("title"),
+    description,
+    openGraph: {
+      title: `${t("title")} | Snowflow`,
+      description,
+    },
   };
 }
 

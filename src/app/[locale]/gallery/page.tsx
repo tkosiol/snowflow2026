@@ -10,8 +10,18 @@ export async function generateMetadata({ params }: GalleryPageProps) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "gallery" });
 
+  const description =
+    locale === "de"
+      ? "Bilder und Eindruecke von Snowflow Ski- und Snowboardreisen. Schau dir an, was dich erwartet!"
+      : "Photos and impressions from Snowflow ski and snowboard trips. See what awaits you!";
+
   return {
-    title: `${t("title")} - Snowflow`,
+    title: t("title"),
+    description,
+    openGraph: {
+      title: `${t("title")} | Snowflow`,
+      description,
+    },
   };
 }
 

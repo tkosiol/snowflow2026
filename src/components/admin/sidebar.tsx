@@ -9,6 +9,7 @@ const navItems = [
   { href: "/admin/pages", label: "Seiten" },
   { href: "/admin/gallery", label: "Galerie" },
   { href: "/admin/inquiries", label: "Anfragen" },
+  { href: "/admin/settings", label: "Einstellungen" },
 ];
 
 export function AdminSidebar() {

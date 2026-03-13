@@ -58,7 +58,7 @@ export function TripCard({ trip }: TripCardProps) {
           )}
           {/* Price badge */}
           <div className="absolute bottom-3 right-3 rounded-full bg-white/95 px-4 py-1.5 text-sm font-bold text-foreground shadow-lg backdrop-blur-sm">
-            {t("from")} {trip.priceEur}&euro;
+            {trip.priceEur}&euro;
           </div>
         </div>
         <CardHeader className="pb-2">

@@ -16,6 +16,24 @@ export const bookingSchema = z.object({
 
 export type BookingFormData = z.infer<typeof bookingSchema>;
 
+export const extraSchema = z.object({
+  name: z.string().min(1),
+  price: z.number().min(0),
+});
+
+export type Extra = z.infer<typeof extraSchema>;
+
+const translationSchema = z.object({
+  title: z.string().optional().default(""),
+  subtitle: z.string().optional().default(""),
+  description: z.string().optional().default(""),
+  includedItems: z.array(z.string()).optional().default([]),
+  locationInfo: z.string().optional().default(""),
+  accommodationInfo: z.string().optional().default(""),
+  logisticsInfo: z.string().optional().default(""),
+  extras: z.array(extraSchema).optional().default([]),
+});
+
 export const tripSchema = z.object({
   slug: z.string().min(1),
   status: z.enum(["DRAFT", "PUBLISHED"]),
@@ -25,24 +43,8 @@ export const tripSchema = z.object({
   destination: z.string().min(1),
   imageUrl: z.string().optional().default(""),
   translations: z.object({
-    de: z.object({
-      title: z.string().min(1),
-      subtitle: z.string().optional().default(""),
-      description: z.string().optional().default(""),
-      includedItems: z.array(z.string()).optional().default([]),
-      locationInfo: z.string().optional().default(""),
-      accommodationInfo: z.string().optional().default(""),
-      logisticsInfo: z.string().optional().default(""),
-    }),
-    en: z.object({
-      title: z.string().optional().default(""),
-      subtitle: z.string().optional().default(""),
-      description: z.string().optional().default(""),
-      includedItems: z.array(z.string()).optional().default([]),
-      locationInfo: z.string().optional().default(""),
-      accommodationInfo: z.string().optional().default(""),
-      logisticsInfo: z.string().optional().default(""),
-    }),
+    de: translationSchema.extend({ title: z.string().min(1) }),
+    en: translationSchema,
   }),
 });
 

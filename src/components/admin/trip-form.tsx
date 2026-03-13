@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { Upload, X } from "lucide-react";
+import { Upload, X, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,22 +15,96 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { TripFormData } from "@/lib/validations";
+import type { TripFormData, Extra } from "@/lib/validations";
 
 interface TripFormProps {
   initialData?: TripFormData;
   onSubmit: (data: TripFormData) => Promise<void>;
 }
 
-const emptyTranslation = {
+interface TranslationState {
+  title: string;
+  subtitle: string;
+  description: string;
+  includedItems: string[];
+  locationInfo: string;
+  accommodationInfo: string;
+  logisticsInfo: string;
+  extras: Extra[];
+}
+
+const emptyTranslation: TranslationState = {
   title: "",
   subtitle: "",
   description: "",
-  includedItems: [] as string[],
+  includedItems: [],
   locationInfo: "",
   accommodationInfo: "",
   logisticsInfo: "",
+  extras: [],
 };
+
+function ExtrasEditor({
+  extras,
+  onChange,
+}: {
+  extras: Extra[];
+  onChange: (extras: Extra[]) => void;
+}) {
+  function addExtra() {
+    onChange([...extras, { name: "", price: 0 }]);
+  }
+
+  function removeExtra(index: number) {
+    onChange(extras.filter((_, i) => i !== index));
+  }
+
+  function updateExtra(index: number, field: "name" | "price", value: string) {
+    const updated = [...extras];
+    if (field === "price") {
+      // Allow comma as decimal separator
+      const normalized = value.replace(",", ".");
+      updated[index] = { ...updated[index], price: parseFloat(normalized) || 0 };
+    } else {
+      updated[index] = { ...updated[index], name: value };
+    }
+    onChange(updated);
+  }
+
+  return (
+    <div className="space-y-2">
+      {extras.map((extra, i) => (
+        <div key={i} className="flex items-center gap-2">
+          <Input
+            placeholder="z.B. Doppelzimmer"
+            value={extra.name}
+            onChange={(e) => updateExtra(i, "name", e.target.value)}
+            className="flex-1"
+          />
+          <div className="flex items-center gap-1">
+            <Input
+              placeholder="0,00"
+              value={extra.price || ""}
+              onChange={(e) => updateExtra(i, "price", e.target.value)}
+              className="w-24 text-right"
+            />
+            <span className="text-sm text-muted-foreground">€</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => removeExtra(i)}
+            className="rounded p-1 text-muted-foreground hover:text-destructive"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
+      ))}
+      <Button type="button" variant="outline" size="sm" onClick={addExtra}>
+        <Plus className="size-3.5 mr-1" /> Extra hinzufügen
+      </Button>
+    </div>
+  );
+}
 
 export function TripForm({ initialData, onSubmit }: TripFormProps) {
   const [slug, setSlug] = useState(initialData?.slug ?? "");
@@ -49,14 +123,22 @@ export function TripForm({ initialData, onSubmit }: TripFormProps) {
   );
   const [imageUrl, setImageUrl] = useState(initialData?.imageUrl ?? "");
 
-  const [de, setDe] = useState(initialData?.translations.de ?? { ...emptyTranslation });
-  const [en, setEn] = useState(initialData?.translations.en ?? { ...emptyTranslation });
+  const [de, setDe] = useState<TranslationState>(
+    initialData?.translations.de
+      ? { ...emptyTranslation, ...initialData.translations.de }
+      : { ...emptyTranslation }
+  );
+  const [en, setEn] = useState<TranslationState>(
+    initialData?.translations.en
+      ? { ...emptyTranslation, ...initialData.translations.en }
+      : { ...emptyTranslation }
+  );
 
   const [deIncludedText, setDeIncludedText] = useState(
-    (initialData?.translations.de?.includedItems ?? []).join(", ")
+    (initialData?.translations.de?.includedItems ?? []).join("\n")
   );
   const [enIncludedText, setEnIncludedText] = useState(
-    (initialData?.translations.en?.includedItems ?? []).join(", ")
+    (initialData?.translations.en?.includedItems ?? []).join("\n")
   );
 
   const [uploading, setUploading] = useState(false);
@@ -108,14 +190,14 @@ export function TripForm({ initialData, onSubmit }: TripFormProps) {
           de: {
             ...de,
             includedItems: deIncludedText
-              .split(",")
+              .split("\n")
               .map((s) => s.trim())
               .filter(Boolean),
           },
           en: {
             ...en,
             includedItems: enIncludedText
-              .split(",")
+              .split("\n")
               .map((s) => s.trim())
               .filter(Boolean),
           },
@@ -267,8 +349,15 @@ export function TripForm({ initialData, onSubmit }: TripFormProps) {
               <Textarea value={de.description} onChange={(e) => updateDe("description", e.target.value)} rows={4} />
             </div>
             <div className="space-y-2">
-              <Label>Inklusivleistungen (kommagetrennt)</Label>
-              <Textarea value={deIncludedText} onChange={(e) => setDeIncludedText(e.target.value)} rows={3} />
+              <Label>Inklusivleistungen (eine pro Zeile)</Label>
+              <Textarea value={deIncludedText} onChange={(e) => setDeIncludedText(e.target.value)} rows={5} placeholder={"Busfahrt ab/bis Berlin\n5x Übernachtung mit Frühstück\n4-Tages-Skipass"} />
+            </div>
+            <div className="space-y-2">
+              <Label>Extras (zubuchbar)</Label>
+              <ExtrasEditor
+                extras={de.extras}
+                onChange={(extras) => setDe((prev) => ({ ...prev, extras }))}
+              />
             </div>
             <div className="space-y-2">
               <Label>Lage-Info</Label>
@@ -287,7 +376,7 @@ export function TripForm({ initialData, onSubmit }: TripFormProps) {
           <TabsContent value="en" className="space-y-4 mt-4">
             <div className="space-y-2">
               <Label>Title</Label>
-              <Input value={en.title} onChange={(e) => updateEn("title", e.target.value)} required />
+              <Input value={en.title} onChange={(e) => updateEn("title", e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label>Subtitle</Label>
@@ -298,8 +387,15 @@ export function TripForm({ initialData, onSubmit }: TripFormProps) {
               <Textarea value={en.description} onChange={(e) => updateEn("description", e.target.value)} rows={4} />
             </div>
             <div className="space-y-2">
-              <Label>Included Items (comma-separated)</Label>
-              <Textarea value={enIncludedText} onChange={(e) => setEnIncludedText(e.target.value)} rows={3} />
+              <Label>Included Items (one per line)</Label>
+              <Textarea value={enIncludedText} onChange={(e) => setEnIncludedText(e.target.value)} rows={5} placeholder={"Bus transfer from/to Berlin\n5 nights with breakfast\n4-day ski pass"} />
+            </div>
+            <div className="space-y-2">
+              <Label>Extras (bookable)</Label>
+              <ExtrasEditor
+                extras={en.extras}
+                onChange={(extras) => setEn((prev) => ({ ...prev, extras }))}
+              />
             </div>
             <div className="space-y-2">
               <Label>Location Info</Label>

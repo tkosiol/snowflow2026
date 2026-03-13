@@ -38,6 +38,7 @@ export default async function EditTripPage({
         locationInfo: deTranslation?.locationInfo ?? "",
         accommodationInfo: deTranslation?.accommodationInfo ?? "",
         logisticsInfo: deTranslation?.logisticsInfo ?? "",
+        extras: (deTranslation?.extras as { name: string; price: number }[]) ?? [],
       },
       en: {
         title: enTranslation?.title ?? "",
@@ -47,6 +48,7 @@ export default async function EditTripPage({
         locationInfo: enTranslation?.locationInfo ?? "",
         accommodationInfo: enTranslation?.accommodationInfo ?? "",
         logisticsInfo: enTranslation?.logisticsInfo ?? "",
+        extras: (enTranslation?.extras as { name: string; price: number }[]) ?? [],
       },
     },
   };

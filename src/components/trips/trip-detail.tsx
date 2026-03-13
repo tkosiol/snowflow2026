@@ -30,6 +30,7 @@ interface TripDetailProps {
       locationInfo: string;
       accommodationInfo: string;
       logisticsInfo: string;
+      extras: { name: string; price: number }[];
     };
   };
 }
@@ -138,6 +139,23 @@ export function TripDetail({ trip }: TripDetailProps) {
           <ul className="list-inside list-disc space-y-1 text-muted-foreground">
             {trip.translation.includedItems.map((item, index) => (
               <li key={index}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Extras */}
+      {trip.translation.extras.length > 0 && (
+        <div>
+          <h2 className="mb-3 text-xl font-semibold">{t("extras")}</h2>
+          <ul className="space-y-2">
+            {trip.translation.extras.map((extra, index) => (
+              <li key={index} className="flex items-center justify-between rounded-lg bg-secondary/50 px-4 py-2.5">
+                <span className="text-foreground">{extra.name}</span>
+                <span className="font-semibold whitespace-nowrap">
+                  {extra.price.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}&nbsp;&euro;
+                </span>
+              </li>
             ))}
           </ul>
         </div>

@@ -63,6 +63,7 @@ export default async function TripPage({ params }: TripPageProps) {
       locationInfo: translation.locationInfo,
       accommodationInfo: translation.accommodationInfo,
       logisticsInfo: translation.logisticsInfo,
+      extras: (translation.extras as { name: string; price: number }[]) ?? [],
     },
   };
 

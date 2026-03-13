@@ -47,6 +47,7 @@ model TripTranslation {
   locationInfo      String   @default("")
   accommodationInfo String   @default("")
   logisticsInfo     String   @default("")
+  extras            Json     @default("[]")
 
   trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
 

@@ -77,6 +77,7 @@ export async function PUT(
   }
 }
 
+// Soft delete: move to archive
 export async function DELETE(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -88,12 +89,15 @@ export async function DELETE(
   const { id } = await params;
 
   try {
-    await prisma.trip.delete({ where: { id } });
+    await prisma.trip.update({
+      where: { id },
+      data: { status: "ARCHIVED" },
+    });
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Delete trip error:", error);
+    console.error("Archive trip error:", error);
     return NextResponse.json(
-      { error: "Failed to delete trip" },
+      { error: "Failed to archive trip" },
       { status: 400 }
     );
   }

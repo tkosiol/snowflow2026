@@ -108,7 +108,7 @@ function ExtrasEditor({
 
 export function TripForm({ initialData, onSubmit }: TripFormProps) {
   const [slug, setSlug] = useState(initialData?.slug ?? "");
-  const [status, setStatus] = useState<"DRAFT" | "PUBLISHED">(
+  const [status, setStatus] = useState<"DRAFT" | "PUBLISHED" | "ARCHIVED">(
     initialData?.status ?? "DRAFT"
   );
   const [departureDate, setDepartureDate] = useState(
@@ -236,7 +236,7 @@ export function TripForm({ initialData, onSubmit }: TripFormProps) {
           </div>
           <div className="space-y-2">
             <Label htmlFor="status">Status</Label>
-            <Select value={status} onValueChange={(v) => v && setStatus(v as "DRAFT" | "PUBLISHED")}>
+            <Select value={status} onValueChange={(v) => v && setStatus(v as "DRAFT" | "PUBLISHED" | "ARCHIVED")}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>

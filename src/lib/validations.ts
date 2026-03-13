@@ -36,7 +36,7 @@ const translationSchema = z.object({
 
 export const tripSchema = z.object({
   slug: z.string().min(1),
-  status: z.enum(["DRAFT", "PUBLISHED"]),
+  status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]),
   departureDate: z.string().min(1),
   returnDate: z.string().min(1),
   priceEur: z.number().int().positive(),

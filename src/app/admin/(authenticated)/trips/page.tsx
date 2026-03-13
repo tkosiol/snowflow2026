@@ -10,9 +10,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { TripActions } from "@/components/admin/trip-actions";
 
 export default async function AdminTripsPage() {
-  const trips = await prisma.trip.findMany({
+  const activeTrips = await prisma.trip.findMany({
+    where: { status: { not: "ARCHIVED" } },
+    include: { translations: true },
+    orderBy: { departureDate: "desc" },
+  });
+
+  const archivedTrips = await prisma.trip.findMany({
+    where: { status: "ARCHIVED" },
     include: { translations: true },
     orderBy: { departureDate: "desc" },
   });
@@ -25,6 +33,7 @@ export default async function AdminTripsPage() {
           Neue Reise
         </Button>
       </div>
+
       <div className="bg-white rounded-lg border">
         <Table>
           <TableHeader>
@@ -37,18 +46,20 @@ export default async function AdminTripsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {trips.map((trip) => {
+            {activeTrips.map((trip) => {
               const deTranslation = trip.translations.find(
                 (t) => t.locale === "de"
               );
               return (
                 <TableRow key={trip.id}>
                   <TableCell className="font-medium">
-                    {deTranslation?.title ?? trip.slug}
+                    <Link href={`/admin/trips/${trip.id}`} className="hover:underline">
+                      {deTranslation?.title ?? trip.slug}
+                    </Link>
                   </TableCell>
                   <TableCell>{trip.destination}</TableCell>
                   <TableCell>
-                    {new Date(trip.departureDate).toLocaleDateString("de-DE")} -{" "}
+                    {new Date(trip.departureDate).toLocaleDateString("de-DE")} –{" "}
                     {new Date(trip.returnDate).toLocaleDateString("de-DE")}
                   </TableCell>
                   <TableCell>
@@ -62,15 +73,18 @@ export default async function AdminTripsPage() {
                         : "Entwurf"}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right">
-                    <Button variant="ghost" size="sm" render={<Link href={`/admin/trips/${trip.id}`} />}>
-                      Bearbeiten
-                    </Button>
+                  <TableCell>
+                    <div className="flex items-center gap-1 justify-end">
+                      <Button variant="ghost" size="sm" render={<Link href={`/admin/trips/${trip.id}`} />}>
+                        Bearbeiten
+                      </Button>
+                      <TripActions id={trip.id} isArchived={false} />
+                    </div>
                   </TableCell>
                 </TableRow>
               );
             })}
-            {trips.length === 0 && (
+            {activeTrips.length === 0 && (
               <TableRow>
                 <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
                   Noch keine Reisen vorhanden.
@@ -80,6 +94,46 @@ export default async function AdminTripsPage() {
           </TableBody>
         </Table>
       </div>
+
+      {archivedTrips.length > 0 && (
+        <>
+          <h2 className="text-xl font-semibold mt-12 mb-4 text-muted-foreground">Archiv</h2>
+          <div className="bg-white rounded-lg border opacity-75">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Titel</TableHead>
+                  <TableHead>Ziel</TableHead>
+                  <TableHead>Zeitraum</TableHead>
+                  <TableHead className="text-right">Aktionen</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {archivedTrips.map((trip) => {
+                  const deTranslation = trip.translations.find(
+                    (t) => t.locale === "de"
+                  );
+                  return (
+                    <TableRow key={trip.id}>
+                      <TableCell className="font-medium text-muted-foreground">
+                        {deTranslation?.title ?? trip.slug}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">{trip.destination}</TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {new Date(trip.departureDate).toLocaleDateString("de-DE")} –{" "}
+                        {new Date(trip.returnDate).toLocaleDateString("de-DE")}
+                      </TableCell>
+                      <TableCell>
+                        <TripActions id={trip.id} isArchived={true} />
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
+        </>
+      )}
     </div>
   );
 }

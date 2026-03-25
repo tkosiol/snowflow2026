@@ -75,7 +75,7 @@ export default async function HomePage({ params }: Props) {
             <Button
               size="lg"
               className="bg-white text-foreground [a]:hover:bg-primary hover:bg-primary hover:text-primary-foreground px-8 py-3 text-base font-semibold shadow-lg"
-              render={<Link href="#trips" />}
+              render={<Link href="/trips" />}
             >
               {t("hero.cta")}
             </Button>

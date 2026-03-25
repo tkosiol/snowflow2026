@@ -35,6 +35,43 @@ interface TripDetailProps {
   };
 }
 
+function autoLink(text: string): React.ReactNode[] {
+  const pattern = /(\bhttps?:\/\/[^\s<]+|\bwww\.[^\s<]+|[\w.+-]+@[\w.-]+\.\w{2,})/g;
+  const parts = text.split(pattern);
+  return parts.map((part, i) => {
+    if (/^https?:\/\//.test(part) || /^www\./.test(part)) {
+      const href = part.startsWith("www.") ? `https://${part}` : part;
+      return (
+        <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="text-[#455d94] underline underline-offset-2 hover:text-[#0f1a37]">
+          {part}
+        </a>
+      );
+    }
+    if (/^[\w.+-]+@[\w.-]+\.\w{2,}$/.test(part)) {
+      return (
+        <a key={i} href={`mailto:${part}`} className="text-[#455d94] underline underline-offset-2 hover:text-[#0f1a37]">
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+}
+
+function AutoLinkedText({ text, className }: { text: string; className?: string }) {
+  const lines = text.split("\n");
+  return (
+    <span className={className}>
+      {lines.map((line, i) => (
+        <span key={i}>
+          {i > 0 && <br />}
+          {autoLink(line)}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
   return date.toLocaleDateString("de-DE", {
@@ -51,8 +88,8 @@ function SectionCard({ section }: { section: TripSection }) {
         <h2 className="mb-3 text-xl font-bold text-[#0f1a37]" style={{ fontFamily: "var(--font-heading)" }}>
           {section.title}
         </h2>
-        <p className="whitespace-pre-line leading-relaxed text-[#45464d]">
-          {section.content}
+        <p className="leading-relaxed text-[#45464d]">
+          <AutoLinkedText text={section.content} />
         </p>
       </div>
     );
@@ -74,7 +111,7 @@ function SectionCard({ section }: { section: TripSection }) {
           {items.map((item, index) => (
             <li key={index} className="flex items-start gap-2 text-[#45464d]">
               <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-[#455d94]" />
-              {item}
+              <span>{autoLink(item)}</span>
             </li>
           ))}
         </ul>
@@ -169,8 +206,8 @@ export function TripDetail({ trip }: TripDetailProps) {
           {/* Left: Description + Sections */}
           <div className="space-y-10 lg:col-span-2">
             {trip.translation.description && (
-              <p className="whitespace-pre-line leading-relaxed text-[#45464d]">
-                {trip.translation.description}
+              <p className="leading-relaxed text-[#45464d]">
+                <AutoLinkedText text={trip.translation.description} />
               </p>
             )}
 
@@ -250,15 +287,23 @@ export function TripDetail({ trip }: TripDetailProps) {
               <div className="my-5 border-t border-[#c6c6ce]" />
 
               {/* CTA */}
-              <Link
-                href={`/booking?trip=${trip.slug}`}
-                className="block w-full rounded-[0.25rem] bg-gradient-to-r from-[#04102c] to-[#1a2542] py-4 text-center text-lg font-bold text-white shadow-lg shadow-[#04102c]/20 transition-opacity duration-150 hover:opacity-90 active:scale-[0.98]"
-              >
-                {t("bookNow")}
-              </Link>
-              <p className="mt-4 text-center text-[10px] font-medium uppercase italic tracking-tighter text-[#45464d]">
-                Sichere dir deinen Platz im tiefen Schnee.
-              </p>
+              {trip.bookingStatus === "FULL" ? (
+                <span className="block w-full cursor-not-allowed rounded-[0.25rem] bg-[#c6c6ce] py-4 text-center text-lg font-bold text-white">
+                  {t("soldOut")}
+                </span>
+              ) : (
+                <>
+                  <Link
+                    href={`/booking?trip=${trip.slug}`}
+                    className="block w-full rounded-[0.25rem] bg-gradient-to-r from-[#04102c] to-[#1a2542] py-4 text-center text-lg font-bold text-white shadow-lg shadow-[#04102c]/20 transition-opacity duration-150 hover:opacity-90 active:scale-[0.98]"
+                  >
+                    {t("bookNow")}
+                  </Link>
+                  <p className="mt-4 text-center text-[10px] font-medium uppercase italic tracking-tighter text-[#45464d]">
+                    Sichere dir deinen Platz im tiefen Schnee.
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>

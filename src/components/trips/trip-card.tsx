@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { MapPin, CalendarDays, ArrowRight } from "lucide-react";
 
+type BookingStatus = "AVAILABLE" | "ALMOST_FULL" | "FULL";
+
 export interface TripCardProps {
   trip: {
     id: string;
@@ -13,6 +15,7 @@ export interface TripCardProps {
     departureDate: string;
     returnDate: string;
     priceEur: number;
+    bookingStatus: BookingStatus;
     imageUrl: string | null;
     translation: {
       title: string;
@@ -60,6 +63,21 @@ export function TripCard({ trip }: TripCardProps) {
               }}
             />
           )}
+          <span
+            className={`absolute top-3 right-3 rounded-[0.25rem] px-3 py-1.5 text-xs font-semibold shadow-sm ${
+              trip.bookingStatus === "AVAILABLE"
+                ? "bg-[#e8f5e9] text-[#2e7d32]"
+                : trip.bookingStatus === "ALMOST_FULL"
+                  ? "bg-[#fff8e1] text-[#f57f17]"
+                  : "bg-[#ffebee] text-[#c62828]"
+            }`}
+          >
+            {trip.bookingStatus === "AVAILABLE"
+              ? t("statusAvailable")
+              : trip.bookingStatus === "ALMOST_FULL"
+                ? t("statusAlmostFull")
+                : t("statusFull")}
+          </span>
         </div>
 
         {/* Card body */}

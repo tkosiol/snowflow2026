@@ -66,6 +66,7 @@ export default async function TripsPage({ params }: Props) {
                     departureDate: trip.departureDate.toISOString(),
                     returnDate: trip.returnDate.toISOString(),
                     priceEur: trip.priceEur,
+                    bookingStatus: trip.bookingStatus as "AVAILABLE" | "ALMOST_FULL" | "FULL",
                     imageUrl: trip.imageUrl,
                     translation: {
                       title: translation?.title ?? trip.destination,

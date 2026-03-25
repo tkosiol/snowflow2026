@@ -29,6 +29,7 @@ export async function POST(request: Request) {
       data: {
         slug: data.slug,
         status: data.status,
+        bookingStatus: data.bookingStatus,
         departureDate: new Date(data.departureDate),
         returnDate: new Date(data.returnDate),
         priceEur: data.priceEur,
@@ -40,12 +41,14 @@ export async function POST(request: Request) {
               locale: "de",
               title: data.translations.de.title,
               subtitle: data.translations.de.subtitle,
+              description: data.translations.de.description,
               sections: data.translations.de.sections as object[],
             },
             {
               locale: "en",
               title: data.translations.en.title,
               subtitle: data.translations.en.subtitle,
+              description: data.translations.en.description,
               sections: data.translations.en.sections as object[],
             },
           ],

@@ -16,7 +16,8 @@
       "Bash(npx next:*)",
       "WebFetch(domain:contribution.usercontent.google.com)",
       "WebFetch(domain:lh3.googleusercontent.com)",
-      "Bash(curl -sL \"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzJjNTg2OTcwYTAyNTQxNzNiMDE1ZWQ3ZWVmZmY0NWU3EgsSBxD0yOqcux8YAZIBJAoKcHJvamVjdF9pZBIWQhQxMTAxOTIzNjA2NDY4NDYxNjA5Ng&filename=&opi=89354086\" -o /tmp/stitch-detail.html && grep -i -A 5 \"buchen\" /tmp/stitch-detail.html | head -60)"
+      "Bash(curl -sL \"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzJjNTg2OTcwYTAyNTQxNzNiMDE1ZWQ3ZWVmZmY0NWU3EgsSBxD0yOqcux8YAZIBJAoKcHJvamVjdF9pZBIWQhQxMTAxOTIzNjA2NDY4NDYxNjA5Ng&filename=&opi=89354086\" -o /tmp/stitch-detail.html && grep -i -A 5 \"buchen\" /tmp/stitch-detail.html | head -60)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

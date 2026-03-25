@@ -36,6 +36,7 @@ import type {
   TripSection,
   PriceItem,
   SectionType,
+  BookingStatus,
 } from "@/lib/validations";
 
 interface TripFormProps {
@@ -251,6 +252,9 @@ export function TripForm({ initialData, onSubmit }: TripFormProps) {
   const [status, setStatus] = useState<"DRAFT" | "PUBLISHED" | "ARCHIVED">(
     initialData?.status ?? "DRAFT"
   );
+  const [bookingStatus, setBookingStatus] = useState<BookingStatus>(
+    initialData?.bookingStatus ?? "AVAILABLE"
+  );
   const [departureDate, setDepartureDate] = useState(
     initialData?.departureDate ?? ""
   );
@@ -269,11 +273,17 @@ export function TripForm({ initialData, onSubmit }: TripFormProps) {
   const [deSubtitle, setDeSubtitle] = useState(
     initialData?.translations.de?.subtitle ?? ""
   );
+  const [deDescription, setDeDescription] = useState(
+    initialData?.translations.de?.description ?? ""
+  );
   const [enTitle, setEnTitle] = useState(
     initialData?.translations.en?.title ?? ""
   );
   const [enSubtitle, setEnSubtitle] = useState(
     initialData?.translations.en?.subtitle ?? ""
+  );
+  const [enDescription, setEnDescription] = useState(
+    initialData?.translations.en?.description ?? ""
   );
 
   const [deSections, setDeSections] = useState<TripSection[]>(
@@ -380,6 +390,7 @@ export function TripForm({ initialData, onSubmit }: TripFormProps) {
       const data: TripFormData = {
         slug,
         status,
+        bookingStatus,
         departureDate,
         returnDate,
         priceEur: parseInt(priceEur, 10),
@@ -389,11 +400,13 @@ export function TripForm({ initialData, onSubmit }: TripFormProps) {
           de: {
             title: deTitle,
             subtitle: deSubtitle,
+            description: deDescription,
             sections: deSections,
           },
           en: {
             title: enTitle,
             subtitle: enSubtitle,
+            description: enDescription,
             sections: enSections,
           },
         },
@@ -439,6 +452,24 @@ export function TripForm({ initialData, onSubmit }: TripFormProps) {
               <SelectContent>
                 <SelectItem value="DRAFT">Entwurf</SelectItem>
                 <SelectItem value="PUBLISHED">Veroeffentlicht</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="bookingStatus">Buchbarkeit</Label>
+            <Select
+              value={bookingStatus}
+              onValueChange={(v) =>
+                v && setBookingStatus(v as BookingStatus)
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="AVAILABLE">Buchbar</SelectItem>
+                <SelectItem value="ALMOST_FULL">Fast ausgebucht</SelectItem>
+                <SelectItem value="FULL">Ausgebucht</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -550,6 +581,15 @@ export function TripForm({ initialData, onSubmit }: TripFormProps) {
                 onChange={(e) => setDeSubtitle(e.target.value)}
               />
             </div>
+            <div className="space-y-2">
+              <Label>Beschreibung</Label>
+              <Textarea
+                value={deDescription}
+                onChange={(e) => setDeDescription(e.target.value)}
+                rows={4}
+                placeholder="Allgemeine Beschreibung der Reise..."
+              />
+            </div>
           </TabsContent>
 
           <TabsContent value="en" className="space-y-4 mt-4">
@@ -565,6 +605,15 @@ export function TripForm({ initialData, onSubmit }: TripFormProps) {
               <Input
                 value={enSubtitle}
                 onChange={(e) => setEnSubtitle(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Description</Label>
+              <Textarea
+                value={enDescription}
+                onChange={(e) => setEnDescription(e.target.value)}
+                rows={4}
+                placeholder="General trip description..."
               />
             </div>
           </TabsContent>

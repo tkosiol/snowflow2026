@@ -26,6 +26,7 @@ export async function POST(
       data: {
         slug: `${original.slug}-copy`,
         status: "DRAFT",
+        bookingStatus: original.bookingStatus,
         departureDate: original.departureDate,
         returnDate: original.returnDate,
         priceEur: original.priceEur,
@@ -36,6 +37,7 @@ export async function POST(
             locale: t.locale,
             title: t.title,
             subtitle: t.subtitle,
+            description: t.description,
             sections: t.sections as object,
           })),
         },

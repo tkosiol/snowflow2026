@@ -19,6 +19,7 @@ model Trip {
   id            String            @id @default(cuid())
   slug          String            @unique
   status        TripStatus        @default(DRAFT)
+  bookingStatus BookingStatus     @default(AVAILABLE)
   departureDate DateTime
   returnDate    DateTime
   priceEur      Int
@@ -31,6 +32,12 @@ model Trip {
   inquiries     BookingInquiry[]
 }
 
+enum BookingStatus {
+  AVAILABLE
+  ALMOST_FULL
+  FULL
+}
+
 enum TripStatus {
   DRAFT
   PUBLISHED
@@ -38,12 +45,13 @@ enum TripStatus {
 }
 
 model TripTranslation {
-  id       String @id @default(cuid())
-  tripId   String
-  locale   String
-  title    String
-  subtitle String @default("")
-  sections Json   @default("[]")
+  id          String @id @default(cuid())
+  tripId      String
+  locale      String
+  title       String
+  subtitle    String @default("")
+  description String @default("")
+  sections    Json   @default("[]")
 
   trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
 

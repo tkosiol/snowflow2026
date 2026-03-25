@@ -28,7 +28,10 @@
     "departure": "Hinfahrt",
     "return": "Rückfahrt",
     "bookNow": "Jetzt buchen",
-    "details": "Details ansehen"
+    "details": "Details ansehen",
+    "statusAvailable": "Buchbar",
+    "statusAlmostFull": "Fast ausgebucht",
+    "statusFull": "Ausgebucht"
   },
   "booking": {
     "title": "Buchungsanfrage",

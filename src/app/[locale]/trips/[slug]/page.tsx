@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { TripDetail } from "@/components/trips/trip-detail";
-import type { TripSection } from "@/lib/validations";
+import type { TripSection, BookingStatus } from "@/lib/validations";
 
 interface TripPageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -55,10 +55,12 @@ export default async function TripPage({ params }: TripPageProps) {
     departureDate: trip.departureDate.toISOString(),
     returnDate: trip.returnDate.toISOString(),
     priceEur: trip.priceEur,
+    bookingStatus: trip.bookingStatus as BookingStatus,
     imageUrl: trip.imageUrl,
     translation: {
       title: translation.title,
       subtitle: translation.subtitle,
+      description: translation.description,
       sections: (translation.sections as TripSection[]) ?? [],
     },
   };

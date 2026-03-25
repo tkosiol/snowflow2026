@@ -11,6 +11,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TripActions } from "@/components/admin/trip-actions";
+import { TripBookingStatus } from "@/components/admin/trip-booking-status";
+import type { BookingStatus } from "@/lib/validations";
 
 export default async function AdminTripsPage() {
   const activeTrips = await prisma.trip.findMany({
@@ -42,6 +44,7 @@ export default async function AdminTripsPage() {
               <TableHead>Ziel</TableHead>
               <TableHead>Zeitraum</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Buchbarkeit</TableHead>
               <TableHead className="text-right">Aktionen</TableHead>
             </TableRow>
           </TableHeader>
@@ -74,6 +77,12 @@ export default async function AdminTripsPage() {
                     </Badge>
                   </TableCell>
                   <TableCell>
+                    <TripBookingStatus
+                      id={trip.id}
+                      initialStatus={trip.bookingStatus as BookingStatus}
+                    />
+                  </TableCell>
+                  <TableCell>
                     <div className="flex items-center gap-1 justify-end">
                       <Button variant="ghost" size="sm" render={<Link href={`/admin/trips/${trip.id}`} />}>
                         Bearbeiten
@@ -86,7 +95,7 @@ export default async function AdminTripsPage() {
             })}
             {activeTrips.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                   Noch keine Reisen vorhanden.
                 </TableCell>
               </TableRow>

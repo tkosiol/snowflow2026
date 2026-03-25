@@ -14,6 +14,8 @@ interface TripSection {
   position: number;
 }
 
+type BookingStatus = "AVAILABLE" | "ALMOST_FULL" | "FULL";
+
 interface TripDetailProps {
   trip: {
     id: string;
@@ -22,10 +24,12 @@ interface TripDetailProps {
     departureDate: string;
     returnDate: string;
     priceEur: number;
+    bookingStatus: BookingStatus;
     imageUrl: string | null;
     translation: {
       title: string;
       subtitle: string;
+      description: string;
       sections: TripSection[];
     };
   };
@@ -164,11 +168,11 @@ export function TripDetail({ trip }: TripDetailProps) {
 
           {/* Left: Description + Sections */}
           <div className="space-y-10 lg:col-span-2">
-            {/* TODO: Reisebeschreibung hier einfügen */}
-            <div className="rounded-[0.5rem] border border-dashed border-[#c6c6ce] bg-[#f2f3ff] px-6 py-8 text-center text-[#45464d]">
-              <p className="text-sm font-medium uppercase tracking-widest text-[#455d94]">Platzhalter</p>
-              <p className="mt-2 text-base">Reisebeschreibung kommt hier hin.</p>
-            </div>
+            {trip.translation.description && (
+              <p className="whitespace-pre-line leading-relaxed text-[#45464d]">
+                {trip.translation.description}
+              </p>
+            )}
 
             {sortedSections.length > 0 && (
               <div className="space-y-8">
@@ -196,9 +200,20 @@ export function TripDetail({ trip }: TripDetailProps) {
                   </span>
                   <p className="mt-1 text-sm text-[#45464d]">Pro Person</p>
                 </div>
-                {/* TODO: Buchbarkeitsstatus — z.B. "Buchbar", "Fast ausgebucht", "Ausgebucht" */}
-                <span className="inline-block rounded-[0.25rem] bg-[#e8f5e9] px-4 py-2 text-xs font-semibold text-[#2e7d32]">
-                  Buchbar
+                <span
+                  className={`inline-block rounded-[0.25rem] px-4 py-2 text-xs font-semibold ${
+                    trip.bookingStatus === "AVAILABLE"
+                      ? "bg-[#e8f5e9] text-[#2e7d32]"
+                      : trip.bookingStatus === "ALMOST_FULL"
+                        ? "bg-[#fff8e1] text-[#f57f17]"
+                        : "bg-[#ffebee] text-[#c62828]"
+                  }`}
+                >
+                  {trip.bookingStatus === "AVAILABLE"
+                    ? t("statusAvailable")
+                    : trip.bookingStatus === "ALMOST_FULL"
+                      ? t("statusAlmostFull")
+                      : t("statusFull")}
                 </span>
               </div>
 

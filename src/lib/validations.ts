@@ -40,12 +40,17 @@ export type TripSection = z.infer<typeof sectionSchema>;
 const translationSchema = z.object({
   title: z.string().optional().default(""),
   subtitle: z.string().optional().default(""),
+  description: z.string().optional().default(""),
   sections: z.array(sectionSchema).optional().default([]),
 });
+
+export const bookingStatuses = ["AVAILABLE", "ALMOST_FULL", "FULL"] as const;
+export type BookingStatus = (typeof bookingStatuses)[number];
 
 export const tripSchema = z.object({
   slug: z.string().min(1),
   status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]),
+  bookingStatus: z.enum(bookingStatuses).optional().default("AVAILABLE"),
   departureDate: z.string().min(1),
   returnDate: z.string().min(1),
   priceEur: z.number().int().positive(),

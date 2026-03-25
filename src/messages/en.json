@@ -28,7 +28,10 @@
     "departure": "Departure",
     "return": "Return",
     "bookNow": "Book now",
-    "details": "View details"
+    "details": "View details",
+    "statusAvailable": "Available",
+    "statusAlmostFull": "Almost full",
+    "statusFull": "Sold out"
   },
   "booking": {
     "title": "Booking Inquiry",

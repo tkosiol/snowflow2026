@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { EditTripClient } from "./edit-client";
-import type { TripSection } from "@/lib/validations";
+import type { TripSection, BookingStatus } from "@/lib/validations";
 
 export default async function EditTripPage({
   params,
@@ -25,6 +25,7 @@ export default async function EditTripPage({
   const initialData = {
     slug: trip.slug,
     status: trip.status as "DRAFT" | "PUBLISHED",
+    bookingStatus: trip.bookingStatus as BookingStatus,
     departureDate: trip.departureDate.toISOString().split("T")[0],
     returnDate: trip.returnDate.toISOString().split("T")[0],
     priceEur: trip.priceEur,
@@ -34,11 +35,13 @@ export default async function EditTripPage({
       de: {
         title: deTranslation?.title ?? "",
         subtitle: deTranslation?.subtitle ?? "",
+        description: deTranslation?.description ?? "",
         sections: (deTranslation?.sections as TripSection[]) ?? [],
       },
       en: {
         title: enTranslation?.title ?? "",
         subtitle: enTranslation?.subtitle ?? "",
+        description: enTranslation?.description ?? "",
         sections: (enTranslation?.sections as TripSection[]) ?? [],
       },
     },

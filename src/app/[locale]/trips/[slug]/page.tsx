@@ -64,7 +64,7 @@ export default async function TripPage({ params }: TripPageProps) {
   };
 
   return (
-    <main className="container mx-auto px-4 py-8">
+    <main>
       <TripDetail trip={tripData} />
     </main>
   );

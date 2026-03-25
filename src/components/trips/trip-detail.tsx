@@ -3,15 +3,7 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { CalendarDays } from "lucide-react";
 
 interface TripSection {
   id: string;
@@ -41,23 +33,24 @@ interface TripDetailProps {
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
-  const day = date.getDate().toString().padStart(2, "0");
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const year = date.getFullYear();
-  return `${day}.${month}.${year}`;
+  return date.toLocaleDateString("de-DE", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 function SectionCard({ section }: { section: TripSection }) {
   if (section.type === "text") {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>{section.title}</CardTitle>
-        </CardHeader>
-        <CardContent className="whitespace-pre-line">
+      <div>
+        <h2 className="mb-3 text-xl font-bold text-[#0f1a37]" style={{ fontFamily: "var(--font-heading)" }}>
+          {section.title}
+        </h2>
+        <p className="whitespace-pre-line leading-relaxed text-[#45464d]">
           {section.content}
-        </CardContent>
-      </Card>
+        </p>
+      </div>
     );
   }
 
@@ -70,10 +63,15 @@ function SectionCard({ section }: { section: TripSection }) {
 
     return (
       <div>
-        <h2 className="mb-3 text-xl font-semibold">{section.title}</h2>
-        <ul className="list-inside list-disc space-y-1 text-muted-foreground">
+        <h2 className="mb-3 text-xl font-bold text-[#0f1a37]" style={{ fontFamily: "var(--font-heading)" }}>
+          {section.title}
+        </h2>
+        <ul className="space-y-2">
           {items.map((item, index) => (
-            <li key={index}>{item}</li>
+            <li key={index} className="flex items-start gap-2 text-[#45464d]">
+              <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-[#455d94]" />
+              {item}
+            </li>
           ))}
         </ul>
       </div>
@@ -86,15 +84,17 @@ function SectionCard({ section }: { section: TripSection }) {
 
     return (
       <div>
-        <h2 className="mb-3 text-xl font-semibold">{section.title}</h2>
+        <h2 className="mb-3 text-xl font-bold text-[#0f1a37]" style={{ fontFamily: "var(--font-heading)" }}>
+          {section.title}
+        </h2>
         <ul className="space-y-2">
           {items.map((item, index) => (
             <li
               key={index}
-              className="flex items-center justify-between rounded-lg bg-secondary/50 px-4 py-2.5"
+              className="flex items-center justify-between rounded-[0.5rem] bg-[#f2f3ff] px-4 py-2.5"
             >
-              <span className="text-foreground">{item.name}</span>
-              <span className="font-semibold whitespace-nowrap">
+              <span className="text-[#0f1a37]">{item.name}</span>
+              <span className="font-semibold whitespace-nowrap text-[#0f1a37]">
                 {item.price.toLocaleString("de-DE", {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
@@ -118,83 +118,136 @@ export function TripDetail({ trip }: TripDetailProps) {
     (a, b) => a.position - b.position
   );
 
-  // Separate card-type sections (text) from block-type sections (list, list-price)
-  const cardSections = sortedSections.filter(
-    (s) => s.type === "text" && s.content
-  );
-  const blockSections = sortedSections.filter(
-    (s) =>
-      (s.type === "list" && s.content.trim()) ||
-      (s.type === "list-price" && (s.priceItems?.length ?? 0) > 0)
-  );
-
   return (
-    <div className="mx-auto max-w-3xl space-y-8">
-      {/* Hero image */}
-      <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl">
+    <>
+      {/* Full-width Hero */}
+      <div className="relative h-[60vh] min-h-[400px] w-full overflow-hidden">
         {trip.imageUrl ? (
           <Image
             src={trip.imageUrl}
             alt={trip.translation.title}
             fill
             className="object-cover"
-            sizes="(max-width: 768px) 100vw, 800px"
+            sizes="100vw"
             priority
           />
         ) : (
-          <div className="h-full w-full bg-gradient-to-br from-sky-400 to-blue-600" />
+          <div
+            className="h-full w-full"
+            style={{ background: "linear-gradient(135deg, #04102c 0%, #1a2542 100%)" }}
+          />
         )}
-      </div>
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-      {/* Title & subtitle */}
-      <div>
-        <h1 className="text-3xl font-bold">{trip.translation.title}</h1>
-        {trip.translation.subtitle && (
-          <p className="mt-2 text-lg text-muted-foreground">
-            {trip.translation.subtitle}
-          </p>
-        )}
-      </div>
-
-      {/* Dates & price */}
-      <div className="flex flex-wrap gap-3">
-        <Badge variant="secondary">
-          {t("departure")}: {formatDate(trip.departureDate)}
-        </Badge>
-        <Badge variant="secondary">
-          {t("return")}: {formatDate(trip.returnDate)}
-        </Badge>
-        <Badge variant="default">
-          {trip.priceEur}&nbsp;&euro; {t("perPerson")}
-        </Badge>
-      </div>
-
-      <Separator />
-
-      {/* Text-type sections as cards */}
-      {cardSections.length > 0 && (
-        <div className="grid gap-4 sm:grid-cols-2">
-          {cardSections.map((section) => (
-            <SectionCard key={section.id} section={section} />
-          ))}
+        {/* Title + Subtitle bottom-left */}
+        <div className="absolute bottom-0 left-0 right-0 px-6 pb-10 sm:px-12 lg:px-16">
+          <div className="mx-auto max-w-7xl">
+            <h1
+              className="text-4xl font-bold text-white drop-shadow-lg sm:text-5xl lg:text-6xl"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              {trip.translation.title}
+            </h1>
+            {trip.translation.subtitle && (
+              <p className="mt-2 text-lg text-white/75 drop-shadow sm:text-xl">
+                {trip.translation.subtitle}
+              </p>
+            )}
+          </div>
         </div>
-      )}
-
-      {/* List and list-price sections */}
-      {blockSections.map((section) => (
-        <SectionCard key={section.id} section={section} />
-      ))}
-
-      <Separator />
-
-      {/* CTA */}
-      <div className="flex justify-center">
-        <Link href={`/booking?trip=${trip.slug}`}>
-          <Button size="lg" className="text-base">
-            {t("bookNow")}
-          </Button>
-        </Link>
       </div>
-    </div>
+
+      {/* Content */}
+      <div className="mx-auto max-w-7xl px-6 py-12 sm:px-8 lg:px-16">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
+
+          {/* Left: Description + Sections */}
+          <div className="space-y-10 lg:col-span-2">
+            {/* TODO: Reisebeschreibung hier einfügen */}
+            <div className="rounded-[0.5rem] border border-dashed border-[#c6c6ce] bg-[#f2f3ff] px-6 py-8 text-center text-[#45464d]">
+              <p className="text-sm font-medium uppercase tracking-widest text-[#455d94]">Platzhalter</p>
+              <p className="mt-2 text-base">Reisebeschreibung kommt hier hin.</p>
+            </div>
+
+            {sortedSections.length > 0 && (
+              <div className="space-y-8">
+                {sortedSections.map((section) => (
+                  <SectionCard key={section.id} section={section} />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Right: Booking Box */}
+          <div className="lg:col-span-1">
+            <div
+              className="sticky top-24 rounded-[0.5rem] border border-[#c6c6ce] bg-white p-6"
+              style={{ boxShadow: "0 24px 48px rgba(15, 26, 55, 0.06)" }}
+            >
+              {/* Price + Status */}
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <span
+                    className="text-4xl font-bold text-[#0f1a37]"
+                    style={{ fontFamily: "var(--font-heading)" }}
+                  >
+                    {trip.priceEur}&euro;
+                  </span>
+                  <p className="mt-1 text-sm text-[#45464d]">Pro Person</p>
+                </div>
+                {/* TODO: Buchbarkeitsstatus — z.B. "Buchbar", "Fast ausgebucht", "Ausgebucht" */}
+                <span className="inline-block rounded-[0.25rem] bg-[#e8f5e9] px-4 py-2 text-xs font-semibold text-[#2e7d32]">
+                  Buchbar
+                </span>
+              </div>
+
+              {/* Divider */}
+              <div className="my-5 border-t border-[#c6c6ce]" />
+
+              {/* Dates */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 text-sm text-[#45464d]">
+                  <CalendarDays className="size-4 shrink-0 text-[#455d94]" />
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-wide text-[#45464d]">
+                      {t("departure")}
+                    </p>
+                    <p className="font-medium text-[#0f1a37]">
+                      {formatDate(trip.departureDate)}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-[#45464d]">
+                  <CalendarDays className="size-4 shrink-0 text-[#455d94]" />
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-wide text-[#45464d]">
+                      {t("return")}
+                    </p>
+                    <p className="font-medium text-[#0f1a37]">
+                      {formatDate(trip.returnDate)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Divider */}
+              <div className="my-5 border-t border-[#c6c6ce]" />
+
+              {/* CTA */}
+              <Link
+                href={`/booking?trip=${trip.slug}`}
+                className="block w-full rounded-[0.25rem] bg-gradient-to-r from-[#04102c] to-[#1a2542] py-4 text-center text-lg font-bold text-white shadow-lg shadow-[#04102c]/20 transition-opacity duration-150 hover:opacity-90 active:scale-[0.98]"
+              >
+                {t("bookNow")}
+              </Link>
+              <p className="mt-4 text-center text-[10px] font-medium uppercase italic tracking-tighter text-[#45464d]">
+                Sichere dir deinen Platz im tiefen Schnee.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }

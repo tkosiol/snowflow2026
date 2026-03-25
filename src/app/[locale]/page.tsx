@@ -5,7 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { TripCard } from "@/components/trips/trip-card";
 import { HeroVideo } from "@/components/layout/hero-video";
 import { Button } from "@/components/ui/button";
-import { ArrowDown } from "lucide-react";
+import { ScrollArrow } from "@/components/layout/scroll-arrow";
 import Image from "next/image";
 
 type Props = {
@@ -81,10 +81,7 @@ export default async function HomePage({ params }: Props) {
             </Button>
           </div>
         </div>
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 animate-bounce">
-          <ArrowDown className="size-6 text-white/60" />
-        </div>
+        <ScrollArrow />
       </section>
 
       {/* About Teaser */}

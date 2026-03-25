@@ -3,16 +3,7 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { CalendarDays, MapPin } from "lucide-react";
+import { MapPin, CalendarDays, ArrowRight } from "lucide-react";
 
 export interface TripCardProps {
   trip: {
@@ -32,10 +23,11 @@ export interface TripCardProps {
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
-  const day = date.getDate().toString().padStart(2, "0");
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const year = date.getFullYear();
-  return `${day}.${month}.${year}`;
+  return date.toLocaleDateString("de-DE", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 export function TripCard({ trip }: TripCardProps) {
@@ -43,8 +35,15 @@ export function TripCard({ trip }: TripCardProps) {
 
   return (
     <Link href={`/trips/${trip.slug}`} className="group block">
-      <Card className="h-full overflow-hidden border-0 shadow-md transition-shadow duration-300 group-hover:shadow-xl">
-        <div className="relative aspect-[16/10] w-full overflow-hidden">
+      <div
+        className="overflow-hidden bg-white border border-transparent transition-all duration-300 group-hover:shadow-[0_32px_64px_rgba(15,26,55,0.12)] group-hover:border-[#455d94]"
+        style={{
+          borderRadius: "0.5rem",
+          boxShadow: "0 24px 48px rgba(15, 26, 55, 0.06)",
+        }}
+      >
+        {/* Image */}
+        <div className="relative aspect-[4/3] w-full overflow-hidden">
           {trip.imageUrl ? (
             <Image
               src={trip.imageUrl}
@@ -54,39 +53,59 @@ export function TripCard({ trip }: TripCardProps) {
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (
-            <div className="h-full w-full bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-600" />
+            <div
+              className="h-full w-full"
+              style={{
+                background: "linear-gradient(135deg, #04102c 0%, #1a2542 100%)",
+              }}
+            />
           )}
-          {/* Price badge */}
-          <div className="absolute bottom-3 right-3 rounded-full bg-white/95 px-4 py-1.5 text-sm font-bold text-foreground shadow-lg backdrop-blur-sm">
-            {trip.priceEur}&euro;
-          </div>
         </div>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-xl">{trip.translation.title}</CardTitle>
-          {trip.translation.subtitle && (
-            <CardDescription className="flex items-center gap-1.5">
-              <MapPin className="size-3.5" />
-              {trip.translation.subtitle}
-            </CardDescription>
+
+        {/* Card body */}
+        <div className="p-5">
+          {/* Title + Price */}
+          <div className="flex items-start justify-between gap-3">
+            <h3
+              className="text-base font-bold leading-snug text-[#0f1a37]"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              {trip.translation.title}
+            </h3>
+            <div className="shrink-0 text-right">
+              <p className="text-base font-bold text-[#0f1a37]">
+                {trip.priceEur}&euro;
+              </p>
+              <p className="text-xs text-[#45464d]">Pro Person</p>
+            </div>
+          </div>
+
+          {/* Location */}
+          {trip.destination && (
+            <div className="mt-2 flex items-center gap-1.5 text-sm text-[#45464d]">
+              <MapPin className="size-3.5 shrink-0" />
+              <span>{trip.destination}</span>
+            </div>
           )}
-        </CardHeader>
-        <CardContent className="pb-2">
-          <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-            <CalendarDays className="size-3.5" />
+
+          {/* Dates */}
+          <div className="mt-1.5 flex items-center gap-1.5 text-sm text-[#45464d]">
+            <CalendarDays className="size-3.5 shrink-0" />
             <span>
-              {formatDate(trip.departureDate)} &ndash; {formatDate(trip.returnDate)}
+              {formatDate(trip.departureDate)} &ndash;{" "}
+              {formatDate(trip.returnDate)}
             </span>
           </div>
-        </CardContent>
-        <CardFooter>
-          <Button
-            variant="default"
-            className="w-full font-semibold group-hover:bg-primary/80 group-hover:text-primary-foreground transition-colors"
-          >
-            {t("details")}
-          </Button>
-        </CardFooter>
-      </Card>
+
+          {/* Details link */}
+          <div className="mt-4 flex justify-end">
+            <span className="flex items-center gap-1 text-sm font-medium text-[#455d94]">
+              {t("details")}
+              <ArrowRight className="size-3.5" />
+            </span>
+          </div>
+        </div>
+      </div>
     </Link>
   );
 }

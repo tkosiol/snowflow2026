@@ -13,7 +13,9 @@
       "Bash(npx tsx:*)",
       "Bash(npm ls:*)",
       "Bash(npm show:*)",
-      "Bash(npx next:*)"
+      "Bash(npx next:*)",
+      "WebFetch(domain:contribution.usercontent.google.com)",
+      "WebFetch(domain:lh3.googleusercontent.com)"
     ]
   }
 }

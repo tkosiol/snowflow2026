@@ -20,7 +20,6 @@ import Image from "next/image";
 const navLinks = [
   { href: "/", key: "home" },
   { href: "/trips", key: "trips" },
-  { href: "/gallery", key: "gallery" },
   { href: "/booking", key: "booking" },
   { href: "/about", key: "about" },
 ] as const;

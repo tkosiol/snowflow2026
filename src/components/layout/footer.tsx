@@ -20,7 +20,7 @@ export async function Footer() {
               className="h-8 w-auto opacity-90"
             />
             <p className="mt-3 text-sm text-background/60">
-              Ski- & Snowboardreisen aus Berlin seit 2000.
+              Ski- & Snowboardreisen aus Berlin.
             </p>
           </div>
 

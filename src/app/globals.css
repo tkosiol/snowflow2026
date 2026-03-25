@@ -7,8 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jb-mono), ui-monospace, monospace;
+  --font-heading: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -48,58 +49,54 @@
 }
 
 :root {
-  /* Near-white with the faintest cool wash */
-  --background: oklch(0.985 0.003 260);
-  --foreground: oklch(0.13 0.03 270);
+  --background: #faf8ff;
+  --foreground: #0f1a37;
 
-  /* Cards: pure white, sharp against the bg */
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.13 0.03 270);
+  --card: #ffffff;
+  --card-foreground: #0f1a37;
 
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.13 0.03 270);
+  --popover: #ffffff;
+  --popover-foreground: #0f1a37;
 
-  /* Primary: rich dark navy — matches the logo filter color */
-  --primary: oklch(0.34 0.10 265);
-  --primary-foreground: oklch(0.99 0 0);
+  /* Primary: deep navy */
+  --primary: #04102c;
+  --primary-foreground: #ffffff;
 
-  /* Secondary: cool off-white slate */
-  --secondary: oklch(0.955 0.006 270);
-  --secondary-foreground: oklch(0.34 0.10 265);
+  /* Secondary: subtle blue-tinted surface */
+  --secondary: #f2f3ff;
+  --secondary-foreground: #0f1a37;
 
-  /* Muted: soft slate for labels/meta */
-  --muted: oklch(0.955 0.006 270);
-  --muted-foreground: oklch(0.46 0.015 270);
+  /* Muted: soft lavender-white */
+  --muted: #f2f3ff;
+  --muted-foreground: #45464d;
 
-  /* Accent: refined steel-blue — subtle contrast, not neon */
-  --accent: oklch(0.58 0.11 250);
-  --accent-foreground: oklch(0.99 0 0);
+  /* Accent: medium blue */
+  --accent: #455d94;
+  --accent-foreground: #ffffff;
 
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: #ba1a1a;
 
-  /* Borders: barely-there slate line */
-  --border: oklch(0.91 0.008 270);
-  --input: oklch(0.91 0.008 270);
-  --ring: oklch(0.34 0.10 265);
+  --border: #c6c6ce;
+  --input: #c6c6ce;
+  --ring: #04102c;
 
-  /* Charts: slate spectrum */
-  --chart-1: oklch(0.58 0.11 250);
-  --chart-2: oklch(0.48 0.08 260);
-  --chart-3: oklch(0.38 0.06 270);
-  --chart-4: oklch(0.65 0.09 240);
-  --chart-5: oklch(0.30 0.04 275);
+  --chart-1: #455d94;
+  --chart-2: #2c457a;
+  --chart-3: #04102c;
+  --chart-4: #a8c0fd;
+  --chart-5: #1a2542;
 
-  --radius: 0.75rem;
+  --radius: 0.125rem;
 
   /* Sidebar */
-  --sidebar: oklch(0.975 0.003 260);
-  --sidebar-foreground: oklch(0.13 0.03 270);
-  --sidebar-primary: oklch(0.34 0.10 265);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.95 0.008 270);
-  --sidebar-accent-foreground: oklch(0.18 0.03 270);
-  --sidebar-border: oklch(0.91 0.008 270);
-  --sidebar-ring: oklch(0.34 0.10 265);
+  --sidebar: #f2f3ff;
+  --sidebar-foreground: #0f1a37;
+  --sidebar-primary: #04102c;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eaedff;
+  --sidebar-accent-foreground: #0f1a37;
+  --sidebar-border: #c6c6ce;
+  --sidebar-ring: #04102c;
 }
 
 @layer base {
@@ -111,6 +108,9 @@
   }
   html {
     @apply font-sans;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
   }
   /* Smooth scrolling */
   html {

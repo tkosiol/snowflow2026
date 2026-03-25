@@ -13,6 +13,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
+interface TripSection {
+  id: string;
+  title: string;
+  type: "text" | "list" | "list-price";
+  content: string;
+  priceItems: { name: string; price: number }[];
+  position: number;
+}
+
 interface TripDetailProps {
   trip: {
     id: string;
@@ -25,12 +34,7 @@ interface TripDetailProps {
     translation: {
       title: string;
       subtitle: string;
-      description: string;
-      includedItems: string[];
-      locationInfo: string;
-      accommodationInfo: string;
-      logisticsInfo: string;
-      extras: { name: string; price: number }[];
+      sections: TripSection[];
     };
   };
 }
@@ -43,8 +47,86 @@ function formatDate(dateString: string): string {
   return `${day}.${month}.${year}`;
 }
 
+function SectionCard({ section }: { section: TripSection }) {
+  if (section.type === "text") {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>{section.title}</CardTitle>
+        </CardHeader>
+        <CardContent className="whitespace-pre-line">
+          {section.content}
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (section.type === "list") {
+    const items = section.content
+      .split("\n")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    if (items.length === 0) return null;
+
+    return (
+      <div>
+        <h2 className="mb-3 text-xl font-semibold">{section.title}</h2>
+        <ul className="list-inside list-disc space-y-1 text-muted-foreground">
+          {items.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  if (section.type === "list-price") {
+    const items = section.priceItems ?? [];
+    if (items.length === 0) return null;
+
+    return (
+      <div>
+        <h2 className="mb-3 text-xl font-semibold">{section.title}</h2>
+        <ul className="space-y-2">
+          {items.map((item, index) => (
+            <li
+              key={index}
+              className="flex items-center justify-between rounded-lg bg-secondary/50 px-4 py-2.5"
+            >
+              <span className="text-foreground">{item.name}</span>
+              <span className="font-semibold whitespace-nowrap">
+                {item.price.toLocaleString("de-DE", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+                &nbsp;&euro;
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  return null;
+}
+
 export function TripDetail({ trip }: TripDetailProps) {
   const t = useTranslations("trips");
+
+  const sortedSections = [...trip.translation.sections].sort(
+    (a, b) => a.position - b.position
+  );
+
+  // Separate card-type sections (text) from block-type sections (list, list-price)
+  const cardSections = sortedSections.filter(
+    (s) => s.type === "text" && s.content
+  );
+  const blockSections = sortedSections.filter(
+    (s) =>
+      (s.type === "list" && s.content.trim()) ||
+      (s.type === "list-price" && (s.priceItems?.length ?? 0) > 0)
+  );
 
   return (
     <div className="mx-auto max-w-3xl space-y-8">
@@ -89,77 +171,19 @@ export function TripDetail({ trip }: TripDetailProps) {
 
       <Separator />
 
-      {/* Description */}
-      {trip.translation.description && (
-        <div className="prose prose-sm max-w-none whitespace-pre-line">
-          {trip.translation.description}
+      {/* Text-type sections as cards */}
+      {cardSections.length > 0 && (
+        <div className="grid gap-4 sm:grid-cols-2">
+          {cardSections.map((section) => (
+            <SectionCard key={section.id} section={section} />
+          ))}
         </div>
       )}
 
-      {/* Info cards */}
-      <div className="grid gap-4 sm:grid-cols-2">
-        {trip.translation.locationInfo && (
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("location")}</CardTitle>
-            </CardHeader>
-            <CardContent className="whitespace-pre-line">
-              {trip.translation.locationInfo}
-            </CardContent>
-          </Card>
-        )}
-
-        {trip.translation.accommodationInfo && (
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("accommodation")}</CardTitle>
-            </CardHeader>
-            <CardContent className="whitespace-pre-line">
-              {trip.translation.accommodationInfo}
-            </CardContent>
-          </Card>
-        )}
-
-        {trip.translation.logisticsInfo && (
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("logistics")}</CardTitle>
-            </CardHeader>
-            <CardContent className="whitespace-pre-line">
-              {trip.translation.logisticsInfo}
-            </CardContent>
-          </Card>
-        )}
-      </div>
-
-      {/* Included items */}
-      {trip.translation.includedItems.length > 0 && (
-        <div>
-          <h2 className="mb-3 text-xl font-semibold">{t("included")}</h2>
-          <ul className="list-inside list-disc space-y-1 text-muted-foreground">
-            {trip.translation.includedItems.map((item, index) => (
-              <li key={index}>{item}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Extras */}
-      {trip.translation.extras.length > 0 && (
-        <div>
-          <h2 className="mb-3 text-xl font-semibold">{t("extras")}</h2>
-          <ul className="space-y-2">
-            {trip.translation.extras.map((extra, index) => (
-              <li key={index} className="flex items-center justify-between rounded-lg bg-secondary/50 px-4 py-2.5">
-                <span className="text-foreground">{extra.name}</span>
-                <span className="font-semibold whitespace-nowrap">
-                  {extra.price.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}&nbsp;&euro;
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {/* List and list-price sections */}
+      {blockSections.map((section) => (
+        <SectionCard key={section.id} section={section} />
+      ))}
 
       <Separator />
 

@@ -38,17 +38,12 @@ enum TripStatus {
 }
 
 model TripTranslation {
-  id                String   @id @default(cuid())
-  tripId            String
-  locale            String
-  title             String
-  subtitle          String   @default("")
-  description       String   @default("")
-  includedItems     String[] @default([])
-  locationInfo      String   @default("")
-  accommodationInfo String   @default("")
-  logisticsInfo     String   @default("")
-  extras            Json     @default("[]")
+  id       String @id @default(cuid())
+  tripId   String
+  locale   String
+  title    String
+  subtitle String @default("")
+  sections Json   @default("[]")
 
   trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
 

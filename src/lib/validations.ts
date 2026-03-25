@@ -16,22 +16,31 @@ export const bookingSchema = z.object({
 
 export type BookingFormData = z.infer<typeof bookingSchema>;
 
-export const extraSchema = z.object({
+export const sectionTypes = ["text", "list", "list-price"] as const;
+export type SectionType = (typeof sectionTypes)[number];
+
+export const priceItemSchema = z.object({
   name: z.string().min(1),
   price: z.number().min(0),
 });
 
-export type Extra = z.infer<typeof extraSchema>;
+export type PriceItem = z.infer<typeof priceItemSchema>;
+
+export const sectionSchema = z.object({
+  id: z.string().min(1),
+  title: z.string(),
+  type: z.enum(sectionTypes),
+  content: z.string().optional().default(""),
+  priceItems: z.array(priceItemSchema).optional().default([]),
+  position: z.number().int().min(0),
+});
+
+export type TripSection = z.infer<typeof sectionSchema>;
 
 const translationSchema = z.object({
   title: z.string().optional().default(""),
   subtitle: z.string().optional().default(""),
-  description: z.string().optional().default(""),
-  includedItems: z.array(z.string()).optional().default([]),
-  locationInfo: z.string().optional().default(""),
-  accommodationInfo: z.string().optional().default(""),
-  logisticsInfo: z.string().optional().default(""),
-  extras: z.array(extraSchema).optional().default([]),
+  sections: z.array(sectionSchema).optional().default([]),
 });
 
 export const tripSchema = z.object({

@@ -53,13 +53,31 @@ export async function PUT(
           upsert: [
             {
               where: { tripId_locale: { tripId: id, locale: "de" } },
-              create: { locale: "de", ...data.translations.de },
-              update: data.translations.de,
+              create: {
+                locale: "de",
+                title: data.translations.de.title,
+                subtitle: data.translations.de.subtitle,
+                sections: data.translations.de.sections as object[],
+              },
+              update: {
+                title: data.translations.de.title,
+                subtitle: data.translations.de.subtitle,
+                sections: data.translations.de.sections as object[],
+              },
             },
             {
               where: { tripId_locale: { tripId: id, locale: "en" } },
-              create: { locale: "en", ...data.translations.en },
-              update: data.translations.en,
+              create: {
+                locale: "en",
+                title: data.translations.en.title,
+                subtitle: data.translations.en.subtitle,
+                sections: data.translations.en.sections as object[],
+              },
+              update: {
+                title: data.translations.en.title,
+                subtitle: data.translations.en.subtitle,
+                sections: data.translations.en.sections as object[],
+              },
             },
           ],
         },

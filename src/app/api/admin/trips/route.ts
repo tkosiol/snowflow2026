@@ -36,8 +36,18 @@ export async function POST(request: Request) {
         imageUrl: data.imageUrl || null,
         translations: {
           create: [
-            { locale: "de", ...data.translations.de },
-            { locale: "en", ...data.translations.en },
+            {
+              locale: "de",
+              title: data.translations.de.title,
+              subtitle: data.translations.de.subtitle,
+              sections: data.translations.de.sections as object[],
+            },
+            {
+              locale: "en",
+              title: data.translations.en.title,
+              subtitle: data.translations.en.subtitle,
+              sections: data.translations.en.sections as object[],
+            },
           ],
         },
       },

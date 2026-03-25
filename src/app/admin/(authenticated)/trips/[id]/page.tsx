@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { EditTripClient } from "./edit-client";
+import type { TripSection } from "@/lib/validations";
 
 export default async function EditTripPage({
   params,
@@ -33,22 +34,12 @@ export default async function EditTripPage({
       de: {
         title: deTranslation?.title ?? "",
         subtitle: deTranslation?.subtitle ?? "",
-        description: deTranslation?.description ?? "",
-        includedItems: deTranslation?.includedItems ?? [],
-        locationInfo: deTranslation?.locationInfo ?? "",
-        accommodationInfo: deTranslation?.accommodationInfo ?? "",
-        logisticsInfo: deTranslation?.logisticsInfo ?? "",
-        extras: (deTranslation?.extras as { name: string; price: number }[]) ?? [],
+        sections: (deTranslation?.sections as TripSection[]) ?? [],
       },
       en: {
         title: enTranslation?.title ?? "",
         subtitle: enTranslation?.subtitle ?? "",
-        description: enTranslation?.description ?? "",
-        includedItems: enTranslation?.includedItems ?? [],
-        locationInfo: enTranslation?.locationInfo ?? "",
-        accommodationInfo: enTranslation?.accommodationInfo ?? "",
-        logisticsInfo: enTranslation?.logisticsInfo ?? "",
-        extras: (enTranslation?.extras as { name: string; price: number }[]) ?? [],
+        sections: (enTranslation?.sections as TripSection[]) ?? [],
       },
     },
   };

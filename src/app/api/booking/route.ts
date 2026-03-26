@@ -26,12 +26,18 @@ export async function POST(request: Request) {
         lastName: data.lastName,
         email: data.email,
         phone: data.phone,
-        dateOfBirth: data.dateOfBirth,
         street: data.street,
         postalCode: data.postalCode,
         city: data.city,
-        personCount: data.personCount ?? 1,
+        personCount: data.persons.length,
         remarks: data.remarks ?? "",
+        persons: {
+          create: data.persons.map((p) => ({
+            firstName: p.firstName,
+            lastName: p.lastName,
+            dateOfBirth: p.dateOfBirth,
+          })),
+        },
       },
     });
 
@@ -45,11 +51,13 @@ export async function POST(request: Request) {
         lastName: data.lastName,
         email: data.email,
         phone: data.phone,
-        dateOfBirth: data.dateOfBirth,
         street: data.street,
         postalCode: data.postalCode,
         city: data.city,
         tripTitle,
+        departureDate: trip.departureDate.toISOString(),
+        returnDate: trip.returnDate.toISOString(),
+        persons: data.persons,
         remarks: data.remarks ?? "",
       });
     } catch (emailError) {
@@ -63,7 +71,7 @@ export async function POST(request: Request) {
         tripTitle: localeTranslation?.title ?? tripTitle,
         departureDate: trip.departureDate.toISOString(),
         returnDate: trip.returnDate.toISOString(),
-        personCount: data.personCount ?? 1,
+        personCount: data.persons.length,
         locale: locale as "de" | "en",
       });
     } catch (emailError) {

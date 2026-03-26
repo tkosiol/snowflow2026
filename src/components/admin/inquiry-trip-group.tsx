@@ -15,7 +15,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { InquiryStatusSelect } from "@/components/admin/inquiry-status-select";
-import { InquiryPersonCount } from "@/components/admin/inquiry-person-count";
 import { InquiryNotes } from "@/components/admin/inquiry-notes";
 import {
   Dialog,
@@ -27,7 +26,16 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, ChevronDown, Trash2, Download } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ChevronRight, ChevronDown, Trash2, Download, UserPlus } from "lucide-react";
+
+export interface PersonData {
+  id: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+}
 
 export interface InquiryData {
   id: string;
@@ -44,6 +52,7 @@ export interface InquiryData {
   status: string;
   personCount: number;
   notes: string;
+  persons: PersonData[];
 }
 
 interface TripGroupProps {
@@ -95,10 +104,145 @@ function StatusBadge({ status, count, persons }: { status: string; count: number
   );
 }
 
+// ─── Person Management ───────────────────────────────────
+
+function PersonRow({ person, onDeleted }: { person: PersonData; onDeleted: (id: string) => void }) {
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  async function handleDelete() {
+    setDeleting(true);
+    try {
+      const res = await fetch("/api/admin/inquiries/persons", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: person.id }),
+      });
+      if (res.ok) {
+        setDeleteOpen(false);
+        onDeleted(person.id);
+      }
+    } finally {
+      setDeleting(false);
+    }
+  }
+
+  return (
+    <div className="flex items-center justify-between py-2 px-3 rounded-md hover:bg-gray-50 transition-colors">
+      <div className="flex items-center gap-4 text-sm">
+        <span className="font-medium text-foreground">
+          {person.firstName} {person.lastName}
+        </span>
+        {person.dateOfBirth && (
+          <span className="text-muted-foreground">
+            geb. {formatDate(person.dateOfBirth)}
+          </span>
+        )}
+      </div>
+      <button
+        onClick={() => setDeleteOpen(true)}
+        className="rounded p-1 text-muted-foreground hover:text-red-600 hover:bg-red-50 transition-colors"
+        title="Person entfernen"
+      >
+        <Trash2 className="size-3.5" />
+      </button>
+
+      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Person entfernen?</DialogTitle>
+            <DialogDescription>
+              <strong>{person.firstName} {person.lastName}</strong> wird aus dieser Anfrage entfernt.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <DialogClose render={<Button variant="outline" />}>
+              Abbrechen
+            </DialogClose>
+            <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
+              {deleting ? "Entfernen..." : "Entfernen"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+function AddPersonForm({ inquiryId, onAdded }: { inquiryId: string; onAdded: (person: PersonData) => void }) {
+  const [open, setOpen] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  async function handleAdd() {
+    if (!firstName.trim() || !lastName.trim()) return;
+    setSaving(true);
+    try {
+      const res = await fetch("/api/admin/inquiries/persons", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ inquiryId, firstName: firstName.trim(), lastName: lastName.trim(), dateOfBirth }),
+      });
+      if (res.ok) {
+        const person = await res.json();
+        onAdded(person);
+        setFirstName("");
+        setLastName("");
+        setDateOfBirth("");
+        setOpen(false);
+      }
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/5 transition-colors"
+      >
+        <UserPlus className="size-3.5" />
+        Person hinzufügen
+      </button>
+    );
+  }
+
+  return (
+    <div className="flex items-end gap-2 pt-2 border-t border-dashed">
+      <div className="flex-1 space-y-1">
+        <Label className="text-xs">Vorname</Label>
+        <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-8 text-sm" />
+      </div>
+      <div className="flex-1 space-y-1">
+        <Label className="text-xs">Nachname</Label>
+        <Input value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-8 text-sm" />
+      </div>
+      <div className="flex-1 space-y-1">
+        <Label className="text-xs">Geburtsdatum</Label>
+        <Input type="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} className="h-8 text-sm" />
+      </div>
+      <Button size="sm" onClick={handleAdd} disabled={saving || !firstName.trim() || !lastName.trim()}>
+        {saving ? "..." : "Hinzufügen"}
+      </Button>
+      <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>
+        Abbrechen
+      </Button>
+    </div>
+  );
+}
+
+// ─── Inquiry Row ─────────────────────────────────────────
+
 function InquiryRow({ inquiry, tripTitle, onDeleted }: { inquiry: InquiryData; tripTitle: string; onDeleted: (id: string) => void }) {
   const [expanded, setExpanded] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [persons, setPersons] = useState(inquiry.persons);
+
+  const personCount = persons.length || inquiry.personCount;
 
   function handleRowClick(e: React.MouseEvent) {
     const target = e.target as HTMLElement;
@@ -123,6 +267,14 @@ function InquiryRow({ inquiry, tripTitle, onDeleted }: { inquiry: InquiryData; t
     } finally {
       setDeleting(false);
     }
+  }
+
+  function handlePersonDeleted(personId: string) {
+    setPersons((prev) => prev.filter((p) => p.id !== personId));
+  }
+
+  function handlePersonAdded(person: PersonData) {
+    setPersons((prev) => [...prev, person]);
   }
 
   return (
@@ -150,7 +302,7 @@ function InquiryRow({ inquiry, tripTitle, onDeleted }: { inquiry: InquiryData; t
         </TableCell>
         <TableCell onClick={(e) => e.stopPropagation()}>
           <div className="flex items-center gap-2">
-            <InquiryPersonCount id={inquiry.id} currentCount={inquiry.personCount} />
+            <span className="text-sm font-medium tabular-nums w-6 text-center">{personCount}</span>
             <button
               onClick={() => setDeleteOpen(true)}
               className="rounded p-1 text-muted-foreground hover:text-red-600 hover:bg-red-50 transition-colors"
@@ -185,63 +337,79 @@ function InquiryRow({ inquiry, tripTitle, onDeleted }: { inquiry: InquiryData; t
             </div>
             <div>
               <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Personen</span>
-              <p>{inquiry.personCount}</p>
-            </div>
-            <div>
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Datum</span>
-              <p>{formatDate(inquiry.createdAt)}</p>
-            </div>
-            <div>
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Status</span>
-              <p>{statusLabels[inquiry.status] ?? inquiry.status}</p>
+              <p>{personCount}</p>
             </div>
           </div>
           <DialogFooter>
             <DialogClose render={<Button variant="outline" />}>
               Abbrechen
             </DialogClose>
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-              disabled={deleting}
-            >
+            <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
               {deleting ? "Löschen..." : "Endgültig löschen"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
       {expanded && (
         <TableRow className="bg-gray-50/50">
           <TableCell colSpan={5} className="p-0">
-            <div className="grid grid-cols-2 gap-x-8 gap-y-3 px-6 py-4 text-sm">
-              {inquiry.dateOfBirth && (
-                <div>
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Geburtsdatum</span>
-                  <p>{formatDate(inquiry.dateOfBirth)}</p>
-                </div>
-              )}
-              {inquiry.phone && (
-                <div>
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Telefon</span>
-                  <p>{inquiry.phone}</p>
-                </div>
-              )}
-              {(inquiry.street || inquiry.postalCode || inquiry.city) && (
-                <div>
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Adresse</span>
-                  {inquiry.street && <p>{inquiry.street}</p>}
-                  {(inquiry.postalCode || inquiry.city) && (
-                    <p>{inquiry.postalCode} {inquiry.city}</p>
+            <div className="px-6 py-4 space-y-4">
+              {/* Contact info */}
+              <div className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm">
+                {inquiry.phone && (
+                  <div>
+                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Telefon</span>
+                    <p>{inquiry.phone}</p>
+                  </div>
+                )}
+                {(inquiry.street || inquiry.postalCode || inquiry.city) && (
+                  <div>
+                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Adresse</span>
+                    {inquiry.street && <p>{inquiry.street}</p>}
+                    {(inquiry.postalCode || inquiry.city) && (
+                      <p>{inquiry.postalCode} {inquiry.city}</p>
+                    )}
+                  </div>
+                )}
+                {inquiry.remarks && (
+                  <div>
+                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Anmerkungen</span>
+                    <p className="text-muted-foreground">{inquiry.remarks}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Persons */}
+              <div>
+                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  Reiseteilnehmer ({personCount})
+                </span>
+                <div className="mt-2 rounded-lg border bg-white divide-y">
+                  {persons.length > 0 ? (
+                    persons.map((person) => (
+                      <PersonRow key={person.id} person={person} onDeleted={handlePersonDeleted} />
+                    ))
+                  ) : (
+                    // Legacy: show old dateOfBirth if no persons exist
+                    inquiry.dateOfBirth ? (
+                      <div className="py-2 px-3 text-sm text-muted-foreground">
+                        Altdaten: {inquiry.firstName} {inquiry.lastName}, geb. {formatDate(inquiry.dateOfBirth)} (Personen: {inquiry.personCount})
+                      </div>
+                    ) : (
+                      <div className="py-2 px-3 text-sm text-muted-foreground">
+                        Keine Personen hinterlegt.
+                      </div>
+                    )
                   )}
                 </div>
-              )}
-              {inquiry.remarks && (
-                <div>
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Anmerkungen</span>
-                  <p className="text-muted-foreground">{inquiry.remarks}</p>
+                <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+                  <AddPersonForm inquiryId={inquiry.id} onAdded={handlePersonAdded} />
                 </div>
-              )}
-              <div className="col-span-2" onClick={(e) => e.stopPropagation()}>
+              </div>
+
+              {/* Notes */}
+              <div onClick={(e) => e.stopPropagation()}>
                 <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Notizen</span>
                 <div className="mt-1">
                   <InquiryNotes id={inquiry.id} currentNotes={inquiry.notes} />
@@ -254,6 +422,8 @@ function InquiryRow({ inquiry, tripTitle, onDeleted }: { inquiry: InquiryData; t
     </>
   );
 }
+
+// ─── Trip Group ──────────────────────────────────────────
 
 export function InquiryTripGroup({ tripId, tripTitle, departureDate, returnDate, inquiries: initialInquiries }: TripGroupProps) {
   const [inquiries, setInquiries] = useState(initialInquiries);
@@ -285,23 +455,22 @@ export function InquiryTripGroup({ tripId, tripTitle, departureDate, returnDate,
       case "status":
         return dir * ((statusOrder[a.status] ?? 0) - (statusOrder[b.status] ?? 0));
       case "personCount":
-        return dir * (a.personCount - b.personCount);
+        return dir * ((a.persons.length || a.personCount) - (b.persons.length || b.personCount));
       default:
         return 0;
     }
   });
 
-  // Compute stats
   const stats: Record<string, { count: number; persons: number }> = {};
   for (const s of ["NEW", "CONTACTED", "PAID", "CLOSED"]) {
     const matching = inquiries.filter((i) => i.status === s);
     stats[s] = {
       count: matching.length,
-      persons: matching.reduce((sum, i) => sum + i.personCount, 0),
+      persons: matching.reduce((sum, i) => sum + (i.persons.length || i.personCount), 0),
     };
   }
 
-  const totalPersons = inquiries.reduce((sum, i) => sum + i.personCount, 0);
+  const totalPersons = inquiries.reduce((sum, i) => sum + (i.persons.length || i.personCount), 0);
 
   function SortHeader({ label, sortKeyName }: { label: string; sortKeyName: SortKey }) {
     const active = sortKey === sortKeyName;
@@ -319,6 +488,8 @@ export function InquiryTripGroup({ tripId, tripTitle, departureDate, returnDate,
       </TableHead>
     );
   }
+
+  if (inquiries.length === 0) return null;
 
   return (
     <Collapsible defaultOpen={inquiries.some((i) => i.status === "NEW")} className="group/panel rounded-lg border bg-white">
@@ -367,13 +538,6 @@ export function InquiryTripGroup({ tripId, tripTitle, departureDate, returnDate,
             {sorted.map((inquiry) => (
               <InquiryRow key={inquiry.id} inquiry={inquiry} tripTitle={tripTitle} onDeleted={handleDeleted} />
             ))}
-            {inquiries.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
-                  Keine Anfragen.
-                </TableCell>
-              </TableRow>
-            )}
           </TableBody>
         </Table>
       </CollapsibleContent>

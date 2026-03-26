@@ -1,16 +1,23 @@
 import { z } from "zod";
 
+export const bookingPersonSchema = z.object({
+  firstName: z.string().min(1, "Vorname ist erforderlich"),
+  lastName: z.string().min(1, "Nachname ist erforderlich"),
+  dateOfBirth: z.string().min(1, "Geburtsdatum ist erforderlich"),
+});
+
+export type BookingPersonData = z.infer<typeof bookingPersonSchema>;
+
 export const bookingSchema = z.object({
   tripId: z.string().min(1, "Bitte eine Reise auswählen"),
   firstName: z.string().min(1, "Vorname ist erforderlich"),
   lastName: z.string().min(1, "Nachname ist erforderlich"),
   email: z.string().email("Ungültige E-Mail-Adresse"),
   phone: z.string().min(1, "Telefonnummer ist erforderlich"),
-  dateOfBirth: z.string().min(1, "Geburtsdatum ist erforderlich"),
   street: z.string().min(1, "Straße ist erforderlich"),
   postalCode: z.string().min(1, "Postleitzahl ist erforderlich"),
   city: z.string().min(1, "Stadt ist erforderlich"),
-  personCount: z.number().int().min(1).default(1),
+  persons: z.array(bookingPersonSchema).min(1, "Mindestens eine Person"),
   remarks: z.string().optional().default(""),
   locale: z.enum(["de", "en"]).optional().default("de"),
 });

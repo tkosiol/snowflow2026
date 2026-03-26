@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     where: { id: tripId },
     include: {
       translations: { where: { locale: "de" } },
-      inquiries: { orderBy: { createdAt: "desc" } },
+      inquiries: { orderBy: { createdAt: "desc" }, include: { persons: true } },
     },
   });
 
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
   const sheet = workbook.addWorksheet("Anfragen");
 
   // Title row
-  sheet.mergeCells("A1:J1");
+  sheet.mergeCells("A1:I1");
   const titleCell = sheet.getCell("A1");
   titleCell.value = tripTitle;
   titleCell.font = { size: 16, bold: true, color: { argb: "FF0F1A37" } };
@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
   sheet.getRow(1).height = 30;
 
   // Subtitle row
-  sheet.mergeCells("A2:J2");
+  sheet.mergeCells("A2:I2");
   const subtitleCell = sheet.getCell("A2");
   subtitleCell.value = `${formatDate(trip.departureDate)} – ${formatDate(trip.returnDate)} | ${trip.inquiries.length} Anfragen | Exportiert am ${formatDate(new Date())}`;
   subtitleCell.font = { size: 10, color: { argb: "FF6B7280" } };
@@ -69,10 +69,9 @@ export async function GET(request: NextRequest) {
 
   // Header row
   const headers = [
-    "Name",
+    "Ansprechpartner",
     "E-Mail",
     "Telefon",
-    "Geburtsdatum",
     "Adresse",
     "Personen",
     "Status",
@@ -98,16 +97,28 @@ export async function GET(request: NextRequest) {
   });
   headerRow.height = 28;
 
+  // Persons detail header
+  const personHeaders = ["", "Vorname", "Nachname", "Geburtsdatum"];
+  const personHeaderStyle = {
+    font: { bold: true, size: 9, color: { argb: "FF455D94" } } as Partial<ExcelJS.Font>,
+    fill: {
+      type: "pattern" as const,
+      pattern: "solid" as const,
+      fgColor: { argb: "FFF0F4FF" },
+    },
+  };
+
   // Data rows
+  let currentRow = 5;
   trip.inquiries.forEach((inquiry, index) => {
-    const row = sheet.getRow(5 + index);
+    const personCount = inquiry.persons.length || inquiry.personCount;
+    const row = sheet.getRow(currentRow);
     const values = [
       `${inquiry.firstName} ${inquiry.lastName}`,
       inquiry.email,
       inquiry.phone,
-      formatDate(inquiry.dateOfBirth),
       `${inquiry.street}, ${inquiry.postalCode} ${inquiry.city}`,
-      inquiry.personCount,
+      personCount,
       statusLabels[inquiry.status] ?? inquiry.status,
       inquiry.remarks || "",
       inquiry.notes || "",
@@ -136,7 +147,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Color-code status cell
-    const statusCell = row.getCell(7);
+    const statusCell = row.getCell(6);
     const statusColors: Record<string, string> = {
       NEW: "FFDBEAFE",
       CONTACTED: "FFFEF3C7",
@@ -150,19 +161,56 @@ export async function GET(request: NextRequest) {
     };
 
     row.height = 22;
+    currentRow++;
+
+    // Person detail rows
+    if (inquiry.persons.length > 0) {
+      // Person sub-header
+      const subHeaderRow = sheet.getRow(currentRow);
+      personHeaders.forEach((h, i) => {
+        const cell = subHeaderRow.getCell(i + 1);
+        cell.value = h;
+        cell.font = personHeaderStyle.font;
+        cell.fill = personHeaderStyle.fill;
+      });
+      subHeaderRow.height = 18;
+      currentRow++;
+
+      inquiry.persons.forEach((person) => {
+        const pRow = sheet.getRow(currentRow);
+        pRow.getCell(1).value = "";
+        pRow.getCell(2).value = person.firstName;
+        pRow.getCell(3).value = person.lastName;
+        pRow.getCell(4).value = person.dateOfBirth ? formatDate(person.dateOfBirth) : "-";
+        for (let i = 1; i <= 4; i++) {
+          const cell = pRow.getCell(i);
+          cell.font = { size: 9, color: { argb: "FF45464D" } };
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FFF8F9FC" },
+          };
+          cell.border = {
+            bottom: { style: "thin", color: { argb: "FFF3F4F6" } },
+          };
+        }
+        pRow.height = 18;
+        currentRow++;
+      });
+    }
   });
 
   // Column widths
-  const widths = [22, 28, 16, 14, 32, 10, 14, 30, 30, 14];
+  const widths = [24, 28, 16, 32, 10, 14, 30, 30, 14];
   widths.forEach((w, i) => {
     sheet.getColumn(i + 1).width = w;
   });
 
   // Summary row
-  const summaryRowIndex = 5 + trip.inquiries.length + 1;
+  const summaryRowIndex = currentRow + 1;
   sheet.mergeCells(`A${summaryRowIndex}:E${summaryRowIndex}`);
   const summaryCell = sheet.getCell(`A${summaryRowIndex}`);
-  const totalPersons = trip.inquiries.reduce((sum, i) => sum + i.personCount, 0);
+  const totalPersons = trip.inquiries.reduce((sum, i) => sum + (i.persons.length || i.personCount), 0);
   summaryCell.value = `Gesamt: ${trip.inquiries.length} Anfragen, ${totalPersons} Personen`;
   summaryCell.font = { bold: true, size: 10, color: { argb: "FF0F1A37" } };
 

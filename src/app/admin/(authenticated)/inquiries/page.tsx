@@ -7,6 +7,7 @@ export default async function AdminInquiriesPage() {
       translations: { where: { locale: "de" } },
       inquiries: {
         orderBy: { createdAt: "desc" },
+        include: { persons: true },
       },
     },
     orderBy: { departureDate: "desc" },
@@ -36,6 +37,12 @@ export default async function AdminInquiriesPage() {
               status: i.status,
               personCount: i.personCount,
               notes: i.notes,
+              persons: i.persons.map((p) => ({
+                id: p.id,
+                firstName: p.firstName,
+                lastName: p.lastName,
+                dateOfBirth: p.dateOfBirth,
+              })),
             }));
 
             return (

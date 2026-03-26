@@ -1,6 +1,8 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY);
+}
 
 interface BookingEmailData {
   firstName: string;
@@ -29,7 +31,7 @@ export async function sendBookingNotification(data: BookingEmailData) {
     </table>
   `;
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: process.env.SMTP_FROM || "noreply@snowflow.de",
     to: process.env.CONTACT_EMAIL || "info@snowflow.de",
     subject: `Neue Buchungsanfrage: ${data.firstName} ${data.lastName} - ${data.tripTitle}`,

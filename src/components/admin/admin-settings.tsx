@@ -71,8 +71,8 @@ export function AdminSettings({ currentEmail }: { currentEmail: string }) {
       return;
     }
 
-    if (newPassword.length < 8) {
-      setPasswordMessage("Das neue Passwort muss mindestens 8 Zeichen lang sein.");
+    if (newPassword.length < 10) {
+      setPasswordMessage("Das neue Passwort muss mindestens 10 Zeichen lang sein.");
       setPasswordError(true);
       return;
     }

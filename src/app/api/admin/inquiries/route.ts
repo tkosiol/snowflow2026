@@ -28,17 +28,34 @@ export async function PATCH(request: Request) {
     const body = await request.json();
     const { id, status, personCount, notes } = body;
 
-    if (!id) {
+    if (!id || typeof id !== "string") {
       return NextResponse.json(
         { error: "id is required" },
         { status: 400 }
       );
     }
 
+    const allowedStatuses = ["NEW", "CONTACTED", "PAID", "CLOSED"];
     const data: Record<string, unknown> = {};
-    if (status !== undefined) data.status = status;
-    if (personCount !== undefined) data.personCount = personCount;
-    if (notes !== undefined) data.notes = notes;
+    if (status !== undefined) {
+      if (!allowedStatuses.includes(status)) {
+        return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+      }
+      data.status = status;
+    }
+    if (personCount !== undefined) {
+      const pc = Number(personCount);
+      if (!Number.isInteger(pc) || pc < 1 || pc > 100) {
+        return NextResponse.json({ error: "Invalid personCount" }, { status: 400 });
+      }
+      data.personCount = pc;
+    }
+    if (notes !== undefined) {
+      if (typeof notes !== "string" || notes.length > 5000) {
+        return NextResponse.json({ error: "Invalid notes" }, { status: 400 });
+      }
+      data.notes = notes;
+    }
 
     const inquiry = await prisma.bookingInquiry.update({
       where: { id },

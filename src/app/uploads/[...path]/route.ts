@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { readFile } from "fs/promises";
-import { join } from "path";
+import { join, resolve } from "path";
 
 const MIME_TYPES: Record<string, string> = {
   ".jpg": "image/jpeg",
@@ -19,12 +19,14 @@ export async function GET(
   const { path } = await params;
   const fileName = path.join("/");
 
-  // Prevent directory traversal
-  if (fileName.includes("..")) {
+  const baseDir = resolve(process.cwd(), "public", "uploads");
+  const filePath = resolve(baseDir, fileName);
+
+  // Prevent directory traversal — resolved path must stay inside uploads
+  if (!filePath.startsWith(baseDir + "/")) {
     return NextResponse.json({ error: "Invalid path" }, { status: 400 });
   }
 
-  const filePath = join(process.cwd(), "public", "uploads", fileName);
   const ext = "." + fileName.split(".").pop()?.toLowerCase();
   const contentType = MIME_TYPES[ext] || "application/octet-stream";
 

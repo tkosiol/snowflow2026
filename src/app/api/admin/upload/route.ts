@@ -17,6 +17,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "No file provided" }, { status: 400 });
   }
 
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+  if (file.size > MAX_FILE_SIZE) {
+    return NextResponse.json(
+      { error: "File too large. Maximum size is 10 MB." },
+      { status: 413 }
+    );
+  }
+
   const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/avif"];
   if (!allowedTypes.includes(file.type)) {
     return NextResponse.json(
@@ -25,7 +33,14 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const ext = file.name.split(".").pop() || "jpg";
+  const allowedExtensions = ["jpg", "jpeg", "png", "webp", "avif"];
+  const ext = (file.name.split(".").pop() || "").toLowerCase();
+  if (!allowedExtensions.includes(ext)) {
+    return NextResponse.json(
+      { error: "Invalid file extension" },
+      { status: 400 }
+    );
+  }
   const uniqueName = `${crypto.randomUUID()}.${ext}`;
   const bytes = new Uint8Array(await file.arrayBuffer());
 

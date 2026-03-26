@@ -47,12 +47,12 @@ export async function POST(request: Request) {
         remarks: data.remarks ?? "",
       });
     } catch (emailError) {
-      console.error("Failed to send booking notification email:", emailError);
+      console.error("Failed to send booking notification email:", emailError instanceof Error ? emailError.message : "Unknown error");
     }
 
     return NextResponse.json({ success: true, id: inquiry.id });
   } catch (error) {
-    console.error("Booking error:", error);
+    console.error("Booking error:", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json(
       { error: "Failed to create booking inquiry" },
       { status: 400 }

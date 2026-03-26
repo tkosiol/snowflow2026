@@ -19,9 +19,9 @@ export async function POST(request: Request) {
       );
     }
 
-    if (newPassword.length < 8) {
+    if (newPassword.length < 10) {
       return NextResponse.json(
-        { error: "Das neue Passwort muss mindestens 8 Zeichen lang sein." },
+        { error: "Das neue Passwort muss mindestens 10 Zeichen lang sein." },
         { status: 400 }
       );
     }

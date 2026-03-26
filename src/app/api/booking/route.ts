@@ -72,6 +72,7 @@ export async function POST(request: Request) {
         departureDate: trip.departureDate.toISOString(),
         returnDate: trip.returnDate.toISOString(),
         personCount: data.persons.length,
+        persons: data.persons,
         locale: locale as "de" | "en",
       });
     } catch (emailError) {

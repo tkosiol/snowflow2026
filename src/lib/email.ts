@@ -141,6 +141,7 @@ interface ConfirmationEmailData {
   departureDate: string;
   returnDate: string;
   personCount: number;
+  persons: PersonData[];
   locale: "de" | "en";
 }
 
@@ -195,6 +196,14 @@ export async function sendBookingConfirmation(data: ConfirmationEmailData) {
             <td style="padding:6px 0;">${data.personCount}</td>
           </tr>
         </table>
+        ${data.persons.length > 0 ? `
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid #e5e7eb;">
+          <p style="margin:0 0 8px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#455d94;">
+            ${de ? "Reiseteilnehmer" : "Travelers"}
+          </p>
+          ${data.persons.map((p) => `<p style="margin:0 0 4px;font-size:14px;color:#0f1a37;">${escapeHtml(p.firstName)} ${escapeHtml(p.lastName)}</p>`).join("")}
+        </div>
+        ` : ""}
       </div>
 
       <p style="margin:0 0 8px;font-size:15px;color:#45464d;line-height:1.7;">

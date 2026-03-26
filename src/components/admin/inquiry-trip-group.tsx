@@ -27,7 +27,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, ChevronDown, Trash2 } from "lucide-react";
+import { ChevronRight, ChevronDown, Trash2, Download } from "lucide-react";
 
 export interface InquiryData {
   id: string;
@@ -47,6 +47,7 @@ export interface InquiryData {
 }
 
 interface TripGroupProps {
+  tripId: string;
   tripTitle: string;
   departureDate: string;
   returnDate: string;
@@ -254,7 +255,7 @@ function InquiryRow({ inquiry, tripTitle, onDeleted }: { inquiry: InquiryData; t
   );
 }
 
-export function InquiryTripGroup({ tripTitle, departureDate, returnDate, inquiries: initialInquiries }: TripGroupProps) {
+export function InquiryTripGroup({ tripId, tripTitle, departureDate, returnDate, inquiries: initialInquiries }: TripGroupProps) {
   const [inquiries, setInquiries] = useState(initialInquiries);
   const [sortKey, setSortKey] = useState<SortKey>("createdAt");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
@@ -321,25 +322,36 @@ export function InquiryTripGroup({ tripTitle, departureDate, returnDate, inquiri
 
   return (
     <Collapsible defaultOpen={inquiries.some((i) => i.status === "NEW")} className="group/panel rounded-lg border bg-white">
-      <CollapsibleTrigger className="flex w-full items-center gap-3 p-4 hover:bg-gray-50 transition-colors cursor-pointer group">
-        <ChevronRight className="size-5 text-muted-foreground transition-transform group-data-[panel-open]:rotate-90" />
-        <div className="flex-1 text-left">
-          <div className="flex items-center gap-3 flex-wrap">
-            <span className="font-semibold text-lg">{tripTitle}</span>
-            <span className="text-sm text-muted-foreground">
-              {formatDate(departureDate)} – {formatDate(returnDate)}
-            </span>
-            <span className="text-sm text-muted-foreground">
-              · {inquiries.length} Anfragen ({totalPersons} Personen)
-            </span>
+      <div className="flex items-center">
+        <CollapsibleTrigger className="flex flex-1 items-center gap-3 p-4 hover:bg-gray-50 transition-colors cursor-pointer group">
+          <ChevronRight className="size-5 text-muted-foreground transition-transform group-data-[panel-open]:rotate-90" />
+          <div className="flex-1 text-left">
+            <div className="flex items-center gap-3 flex-wrap">
+              <span className="font-semibold text-lg">{tripTitle}</span>
+              <span className="text-sm text-muted-foreground">
+                {formatDate(departureDate)} – {formatDate(returnDate)}
+              </span>
+              <span className="text-sm text-muted-foreground">
+                · {inquiries.length} Anfragen ({totalPersons} Personen)
+              </span>
+            </div>
+            <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+              {(["NEW", "CONTACTED", "PAID", "CLOSED"] as const).map((s) => (
+                <StatusBadge key={s} status={s} count={stats[s].count} persons={stats[s].persons} />
+              ))}
+            </div>
           </div>
-          <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-            {(["NEW", "CONTACTED", "PAID", "CLOSED"] as const).map((s) => (
-              <StatusBadge key={s} status={s} count={stats[s].count} persons={stats[s].persons} />
-            ))}
-          </div>
-        </div>
-      </CollapsibleTrigger>
+        </CollapsibleTrigger>
+        <a
+          href={`/api/admin/inquiries/export?tripId=${tripId}`}
+          download
+          className="mr-4 rounded-lg p-2.5 text-muted-foreground hover:text-foreground hover:bg-gray-100 transition-colors"
+          title="Als Excel herunterladen"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Download className="size-5" />
+        </a>
+      </div>
       <CollapsibleContent className="border-t">
         <Table>
           <TableHeader>

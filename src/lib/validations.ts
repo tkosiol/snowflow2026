@@ -12,6 +12,7 @@ export const bookingSchema = z.object({
   city: z.string().min(1, "Stadt ist erforderlich"),
   personCount: z.number().int().min(1).default(1),
   remarks: z.string().optional().default(""),
+  locale: z.enum(["de", "en"]).optional().default("de"),
 });
 
 export type BookingFormData = z.infer<typeof bookingSchema>;

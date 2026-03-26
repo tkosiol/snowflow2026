@@ -41,6 +41,7 @@ export default async function AdminInquiriesPage() {
             return (
               <InquiryTripGroup
                 key={trip.id}
+                tripId={trip.id}
                 tripTitle={trip.translations[0]?.title ?? trip.destination}
                 departureDate={trip.departureDate.toISOString()}
                 returnDate={trip.returnDate.toISOString()}

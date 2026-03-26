@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { bookingSchema, type BookingFormData } from "@/lib/validations";
+import { bookingSchema } from "@/lib/validations";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -42,10 +42,11 @@ interface BookingFormProps {
 
 export function BookingForm({ trips }: BookingFormProps) {
   const t = useTranslations("booking");
+  const locale = useLocale();
   const searchParams = useSearchParams();
   const tripSlug = searchParams.get("trip");
 
-  const [formData, setFormData] = useState<BookingFormData>({
+  const [formData, setFormData] = useState({
     tripId: "",
     firstName: "",
     lastName: "",
@@ -59,7 +60,7 @@ export function BookingForm({ trips }: BookingFormProps) {
     remarks: "",
   });
 
-  const [errors, setErrors] = useState<Partial<Record<keyof BookingFormData, string>>>({});
+  const [errors, setErrors] = useState<Partial<Record<string, string>>>({});
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [submitError, setSubmitError] = useState(false);
@@ -79,7 +80,7 @@ export function BookingForm({ trips }: BookingFormProps) {
   ) {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name as keyof BookingFormData]) {
+    if (errors[name as string]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
   }
@@ -97,11 +98,11 @@ export function BookingForm({ trips }: BookingFormProps) {
     setSuccess(false);
     setSubmitError(false);
 
-    const result = bookingSchema.safeParse(formData);
+    const result = bookingSchema.safeParse({ ...formData, locale });
     if (!result.success) {
-      const fieldErrors: Partial<Record<keyof BookingFormData, string>> = {};
+      const fieldErrors: Partial<Record<string, string>> = {};
       for (const issue of result.error.issues) {
-        const field = issue.path[0] as keyof BookingFormData;
+        const field = issue.path[0] as string;
         if (!fieldErrors[field]) {
           fieldErrors[field] = issue.message;
         }

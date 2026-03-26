@@ -1,16 +1,18 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { bookingSchema } from "@/lib/validations";
-import { sendBookingNotification } from "@/lib/email";
+import { sendBookingNotification, sendBookingConfirmation } from "@/lib/email";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const data = bookingSchema.parse(body);
 
+    const locale = data.locale ?? "de";
+
     const trip = await prisma.trip.findUnique({
       where: { id: data.tripId },
-      include: { translations: { where: { locale: "de" } } },
+      include: { translations: true },
     });
 
     if (!trip) {
@@ -33,6 +35,10 @@ export async function POST(request: Request) {
       },
     });
 
+    const deTranslation = trip.translations.find((t) => t.locale === "de");
+    const localeTranslation = trip.translations.find((t) => t.locale === locale);
+    const tripTitle = deTranslation?.title ?? trip.destination;
+
     try {
       await sendBookingNotification({
         firstName: data.firstName,
@@ -43,11 +49,25 @@ export async function POST(request: Request) {
         street: data.street,
         postalCode: data.postalCode,
         city: data.city,
-        tripTitle: trip.translations[0]?.title ?? trip.destination,
+        tripTitle,
         remarks: data.remarks ?? "",
       });
     } catch (emailError) {
       console.error("Failed to send booking notification email:", emailError instanceof Error ? emailError.message : "Unknown error");
+    }
+
+    try {
+      await sendBookingConfirmation({
+        firstName: data.firstName,
+        email: data.email,
+        tripTitle: localeTranslation?.title ?? tripTitle,
+        departureDate: trip.departureDate.toISOString(),
+        returnDate: trip.returnDate.toISOString(),
+        personCount: data.personCount ?? 1,
+        locale: locale as "de" | "en",
+      });
+    } catch (emailError) {
+      console.error("Failed to send booking confirmation email:", emailError instanceof Error ? emailError.message : "Unknown error");
     }
 
     return NextResponse.json({ success: true, id: inquiry.id });

@@ -1,14 +1,6 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT) || 587,
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 interface BookingEmailData {
   firstName: string;
@@ -37,8 +29,8 @@ export async function sendBookingNotification(data: BookingEmailData) {
     </table>
   `;
 
-  await transporter.sendMail({
-    from: process.env.SMTP_FROM || "info@snowflow.de",
+  await resend.emails.send({
+    from: process.env.SMTP_FROM || "noreply@snowflow.de",
     to: process.env.CONTACT_EMAIL || "info@snowflow.de",
     subject: `Neue Buchungsanfrage: ${data.firstName} ${data.lastName} - ${data.tripTitle}`,
     html,

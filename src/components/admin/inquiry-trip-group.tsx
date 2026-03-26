@@ -17,7 +17,17 @@ import {
 import { InquiryStatusSelect } from "@/components/admin/inquiry-status-select";
 import { InquiryPersonCount } from "@/components/admin/inquiry-person-count";
 import { InquiryNotes } from "@/components/admin/inquiry-notes";
-import { ChevronRight, ChevronDown } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { ChevronRight, ChevronDown, Trash2 } from "lucide-react";
 
 export interface InquiryData {
   id: string;
@@ -84,16 +94,34 @@ function StatusBadge({ status, count, persons }: { status: string; count: number
   );
 }
 
-function InquiryRow({ inquiry }: { inquiry: InquiryData }) {
+function InquiryRow({ inquiry, tripTitle, onDeleted }: { inquiry: InquiryData; tripTitle: string; onDeleted: (id: string) => void }) {
   const [expanded, setExpanded] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   function handleRowClick(e: React.MouseEvent) {
-    // Don't toggle if clicking on interactive elements
     const target = e.target as HTMLElement;
-    if (target.closest("select, input, textarea, button, [data-slot='select-trigger'], [data-slot='select-content']")) {
+    if (target.closest("select, input, textarea, button, [data-slot='select-trigger'], [data-slot='select-content'], [data-slot='dialog']")) {
       return;
     }
     setExpanded(!expanded);
+  }
+
+  async function handleDelete() {
+    setDeleting(true);
+    try {
+      const res = await fetch("/api/admin/inquiries", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: inquiry.id }),
+      });
+      if (res.ok) {
+        setDeleteOpen(false);
+        onDeleted(inquiry.id);
+      }
+    } finally {
+      setDeleting(false);
+    }
   }
 
   return (
@@ -120,9 +148,67 @@ function InquiryRow({ inquiry }: { inquiry: InquiryData }) {
           <InquiryStatusSelect id={inquiry.id} currentStatus={inquiry.status} />
         </TableCell>
         <TableCell onClick={(e) => e.stopPropagation()}>
-          <InquiryPersonCount id={inquiry.id} currentCount={inquiry.personCount} />
+          <div className="flex items-center gap-2">
+            <InquiryPersonCount id={inquiry.id} currentCount={inquiry.personCount} />
+            <button
+              onClick={() => setDeleteOpen(true)}
+              className="rounded p-1 text-muted-foreground hover:text-red-600 hover:bg-red-50 transition-colors"
+              title="Anfrage löschen"
+            >
+              <Trash2 className="size-4" />
+            </button>
+          </div>
         </TableCell>
       </TableRow>
+
+      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Anfrage löschen?</DialogTitle>
+            <DialogDescription>
+              Diese Aktion kann nicht rückgängig gemacht werden.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm py-2">
+            <div>
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Name</span>
+              <p className="font-medium">{inquiry.firstName} {inquiry.lastName}</p>
+            </div>
+            <div>
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Email</span>
+              <p>{inquiry.email}</p>
+            </div>
+            <div>
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Reise</span>
+              <p>{tripTitle}</p>
+            </div>
+            <div>
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Personen</span>
+              <p>{inquiry.personCount}</p>
+            </div>
+            <div>
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Datum</span>
+              <p>{formatDate(inquiry.createdAt)}</p>
+            </div>
+            <div>
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Status</span>
+              <p>{statusLabels[inquiry.status] ?? inquiry.status}</p>
+            </div>
+          </div>
+          <DialogFooter>
+            <DialogClose render={<Button variant="outline" />}>
+              Abbrechen
+            </DialogClose>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={deleting}
+            >
+              {deleting ? "Löschen..." : "Endgültig löschen"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       {expanded && (
         <TableRow className="bg-gray-50/50">
           <TableCell colSpan={5} className="p-0">
@@ -168,9 +254,14 @@ function InquiryRow({ inquiry }: { inquiry: InquiryData }) {
   );
 }
 
-export function InquiryTripGroup({ tripTitle, departureDate, returnDate, inquiries }: TripGroupProps) {
+export function InquiryTripGroup({ tripTitle, departureDate, returnDate, inquiries: initialInquiries }: TripGroupProps) {
+  const [inquiries, setInquiries] = useState(initialInquiries);
   const [sortKey, setSortKey] = useState<SortKey>("createdAt");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
+
+  function handleDeleted(id: string) {
+    setInquiries((prev) => prev.filter((i) => i.id !== id));
+  }
 
   function handleSort(key: SortKey) {
     if (sortKey === key) {
@@ -262,7 +353,7 @@ export function InquiryTripGroup({ tripTitle, departureDate, returnDate, inquiri
           </TableHeader>
           <TableBody>
             {sorted.map((inquiry) => (
-              <InquiryRow key={inquiry.id} inquiry={inquiry} />
+              <InquiryRow key={inquiry.id} inquiry={inquiry} tripTitle={tripTitle} onDeleted={handleDeleted} />
             ))}
             {inquiries.length === 0 && (
               <TableRow>

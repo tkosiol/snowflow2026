@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
+import { alternateLanguages } from "@/lib/config";
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -8,7 +9,18 @@ interface Props {
 export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "nav" });
-  return { title: `${t("about")} | Snowflow` };
+  const description =
+    locale === "de"
+      ? "Erfahre mehr über Snowflow - Berlins Ski- & Snowboard-Community seit 2000."
+      : "Learn more about Snowflow - Berlin's ski & snowboard community since 2000.";
+  return {
+    title: `${t("about")} | Snowflow`,
+    description,
+    openGraph: { title: `${t("about")} | Snowflow`, description },
+    alternates: {
+      languages: alternateLanguages("/about"),
+    },
+  };
 }
 
 export default async function AboutPage({ params }: Props) {

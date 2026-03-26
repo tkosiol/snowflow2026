@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
+import { alternateLanguages } from "@/lib/config";
 import { prisma } from "@/lib/prisma";
 import { BookingForm } from "@/components/booking/booking-form";
 
@@ -22,6 +23,9 @@ export async function generateMetadata({ params }: BookingPageProps) {
     openGraph: {
       title: `${t("title")} | Snowflow`,
       description,
+    },
+    alternates: {
+      languages: alternateLanguages("/booking"),
     },
   };
 }

@@ -19,6 +19,30 @@ export async function GET() {
   return NextResponse.json(inquiries);
 }
 
+export async function DELETE(request: Request) {
+  const session = await auth();
+  if (!session?.user)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  try {
+    const { id } = await request.json();
+
+    if (!id || typeof id !== "string") {
+      return NextResponse.json({ error: "id is required" }, { status: 400 });
+    }
+
+    await prisma.bookingInquiry.delete({ where: { id } });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Delete inquiry error:", error instanceof Error ? error.message : "Unknown error");
+    return NextResponse.json(
+      { error: "Failed to delete inquiry" },
+      { status: 400 }
+    );
+  }
+}
+
 export async function PATCH(request: Request) {
   const session = await auth();
   if (!session?.user)

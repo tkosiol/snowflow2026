@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { alternateLanguages } from "@/lib/config";
 import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
 import { TripCard } from "@/components/trips/trip-card";
@@ -31,6 +32,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title,
       description,
+    },
+    alternates: {
+      languages: alternateLanguages(""),
     },
   };
 }

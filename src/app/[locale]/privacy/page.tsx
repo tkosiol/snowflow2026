@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { alternateLanguages } from "@/lib/config";
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -7,7 +8,12 @@ interface Props {
 export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "nav" });
-  return { title: `${t("privacy")} | Snowflow` };
+  return {
+    title: `${t("privacy")} | Snowflow`,
+    alternates: {
+      languages: alternateLanguages("/privacy"),
+    },
+  };
 }
 
 export default async function PrivacyPage({ params }: Props) {

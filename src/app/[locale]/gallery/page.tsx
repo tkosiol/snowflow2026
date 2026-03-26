@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
+import { alternateLanguages } from "@/lib/config";
 import { GalleryGrid } from "@/components/gallery/gallery-grid";
 
 interface GalleryPageProps {
@@ -21,6 +22,9 @@ export async function generateMetadata({ params }: GalleryPageProps) {
     openGraph: {
       title: `${t("title")} | Snowflow`,
       description,
+    },
+    alternates: {
+      languages: alternateLanguages("/gallery"),
     },
   };
 }

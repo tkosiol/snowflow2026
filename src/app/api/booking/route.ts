@@ -16,12 +16,26 @@ function isRateLimited(ip: string): boolean {
   }
   if (entry.count >= RATE_LIMIT) return true;
   entry.count++;
+  // Probabilistic cleanup of expired entries (~1% of requests)
+  if (Math.random() < 0.01) {
+    for (const [key, val] of ipRequests) {
+      if (now > val.resetAt) ipRequests.delete(key);
+    }
+  }
   return false;
 }
 
 export async function POST(request: Request) {
-  const forwarded = request.headers.get("x-forwarded-for");
-  const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
+  const ip =
+    request.headers.get("x-real-ip") ??
+    request.headers.get("x-forwarded-for")?.split(",")[0].trim();
+
+  if (!ip) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429 }
+    );
+  }
 
   if (isRateLimited(ip)) {
     return NextResponse.json(

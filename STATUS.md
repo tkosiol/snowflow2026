@@ -55,40 +55,26 @@ The project builds successfully (`npx next build` passes) and all routes are fun
 
 ## What's Next
 
-### Phase 6: Polish & Deploy
+### Security
+- [ ] Add rate limiting to `POST /api/booking` (e.g. 5 requests/IP/hour via middleware)
+- [ ] Add honeypot field to booking form (hidden input — reject submission if filled)
 
-#### Content & Assets
+### Email (code change required)
+- [ ] Replace Resend (`src/lib/email.ts`) with nodemailer + SMTP — env vars already exist in `.env.local`
+- [ ] Test email delivery end-to-end with Netcup SMTP
+
+### GDPR / Privacy
+- [ ] Fill in controller details in privacy policy (name, street, postal code, city — currently placeholder text)
+- [ ] Update privacy policy section 3 — replace "Resend Inc., USA" with Netcup own mail server (no USA transfer)
+- [ ] Add privacy notice below booking form submit button (Art. 13 DSGVO — no checkbox needed, just a note linking to Datenschutzerklärung)
+
+### Content & Admin
 - [ ] Add Snowflow logo to `public/images/` and update Navbar
-- [ ] Add hero background videos (`public/videos/hero-desktop.mp4`, `hero-mobile.mp4`) and wire up in homepage hero section
 - [ ] Add actual trip images and update `imageUrl` in seed/admin
 - [ ] Fill in CMS page content (Über uns, Impressum, Datenschutz) via admin panel
-
-#### Missing Features
-- [ ] Admin page editor — create `/admin/pages/[id]/page.tsx` for editing page content (markdown/rich text per locale)
-- [ ] Gallery image upload — implement actual file upload (local storage or S3) in admin gallery
-- [ ] Rich text editor component for CMS pages (`src/components/admin/rich-text-editor.tsx`)
+- [ ] Admin page editor — `/admin/pages/[id]/page.tsx` for editing page content (markdown/rich text per locale)
+- [ ] Gallery image upload — implement actual file upload in admin gallery
 - [ ] Trip delete confirmation dialog in admin
 
-#### SEO & Compliance
-- [ ] SEO meta tags + Open Graph per page (use `generateMetadata`)
-- [ ] Cookie consent banner
-- [ ] Custom 404 and 500 error pages
-- [ ] `robots.txt` and `sitemap.xml`
-
-#### Email
-- [ ] Configure real SMTP credentials in `.env.local` for booking notifications
-- [ ] Test email delivery end-to-end
-
-#### Production Deployment
-- [ ] Dockerfile for standalone Next.js build
-- [ ] `docker-compose.prod.yml` with Postgres + Next.js
-- [ ] Nginx reverse proxy config
-- [ ] Set production environment variables (NEXTAUTH_SECRET, SMTP, DATABASE_URL)
-- [ ] SSL/TLS setup (Let's Encrypt)
-
-#### Nice-to-haves
-- [ ] Image optimization pipeline (sharp, next/image remote patterns)
-- [ ] Admin: bulk operations for inquiries
-- [ ] Social media preview images
-- [ ] Analytics integration
-- [ ] Rate limiting on booking API
+### SEO
+- [ ] SEO meta tags + Open Graph per page (use `generateMetadata`) — booking page already done, remaining pages missing

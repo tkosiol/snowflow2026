@@ -1,0 +1,38 @@
+{
+  "planPath": "docs/superpowers/plans/2026-04-14-security-gdpr-fixes.md",
+  "tasks": [
+    {
+      "id": 9,
+      "subject": "Task 1: Rate limiting on POST /api/booking",
+      "status": "pending",
+      "description": "**Goal:** Reject more than 5 submissions from the same IP per hour with HTTP 429.\n\n**Files:**\n- Modify: `src/app/api/booking/route.ts`\n\n**Acceptance Criteria:**\n- [ ] A single IP submitting 6+ times within an hour gets a 429 response\n- [ ] The 6th attempt does NOT create a DB record or send an email\n- [ ] A first-time IP succeeds normally\n\n**Verify:** `npm run build` → exits 0, no TypeScript errors\n\n```json:metadata\n{\"files\": [\"src/app/api/booking/route.ts\"], \"verifyCommand\": \"npm run build\", \"acceptanceCriteria\": [\"IP submitting 6+ times in 1hr gets 429\", \"6th attempt saves nothing to DB\", \"first-time IP succeeds\"]}\n```"
+    },
+    {
+      "id": 10,
+      "subject": "Task 2: Honeypot field on booking form",
+      "status": "pending",
+      "blockedBy": [9],
+      "description": "**Goal:** Silently reject bot submissions that fill a hidden form field.\n\n**Files:**\n- Modify: `src/components/booking/booking-form.tsx`\n- Modify: `src/app/api/booking/route.ts`\n\n**Acceptance Criteria:**\n- [ ] Submission with `website` field populated returns `{ success: true }` but saves nothing\n- [ ] Normal submission proceeds as before\n- [ ] Hidden field not visible or focusable\n\n**Verify:** `npm run build` → exits 0, no TypeScript errors\n\n```json:metadata\n{\"files\": [\"src/components/booking/booking-form.tsx\", \"src/app/api/booking/route.ts\"], \"verifyCommand\": \"npm run build\", \"acceptanceCriteria\": [\"filled website field returns 200 but saves nothing\", \"normal submission unaffected\", \"field not visible/focusable\"]}\n```"
+    },
+    {
+      "id": 11,
+      "subject": "Task 3: Switch email from Resend to nodemailer/SMTP",
+      "status": "pending",
+      "description": "**Goal:** Replace Resend SDK with nodemailer using existing SMTP env vars.\n\n**Files:**\n- Modify: `src/lib/email.ts`\n\n**Acceptance Criteria:**\n- [ ] No import from `resend`\n- [ ] Both send functions use `getTransporter().sendMail()`\n- [ ] Reads SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS from env\n\n**Verify:** `npm run build` → exits 0, no TypeScript errors\n\n```json:metadata\n{\"files\": [\"src/lib/email.ts\"], \"verifyCommand\": \"npm run build\", \"acceptanceCriteria\": [\"no resend import\", \"both functions use nodemailer\", \"reads SMTP env vars\"]}\n```"
+    },
+    {
+      "id": 12,
+      "subject": "Task 4: Privacy notice on booking form (Art. 13 DSGVO)",
+      "status": "pending",
+      "description": "**Goal:** Add privacy notice below submit button linking to Datenschutzerklärung.\n\n**Files:**\n- Modify: `src/components/booking/booking-form.tsx`\n- Modify: `src/messages/de.json`\n- Modify: `src/messages/en.json`\n\n**Acceptance Criteria:**\n- [ ] Notice visible in DE and EN below submit button\n- [ ] Links to `/{locale}/privacy`\n- [ ] Text via next-intl t.rich()\n\n**Verify:** `npm run build` → exits 0, no TypeScript errors\n\n```json:metadata\n{\"files\": [\"src/components/booking/booking-form.tsx\", \"src/messages/de.json\", \"src/messages/en.json\"], \"verifyCommand\": \"npm run build\", \"acceptanceCriteria\": [\"notice in DE and EN\", \"links to privacy page\", \"uses t.rich()\"]}\n```"
+    },
+    {
+      "id": 13,
+      "subject": "Task 5: Update privacy policy — remove Resend, fix section 3",
+      "status": "pending",
+      "blockedBy": [11],
+      "description": "**Goal:** Replace Resend/USA mention in section 3 with Netcup own mail server.\n\n**Files:**\n- Modify: `src/app/[locale]/privacy/page.tsx`\n\n**Acceptance Criteria:**\n- [ ] Section 3 no longer mentions Resend or USA\n- [ ] Section 3 references Netcup Germany\n- [ ] Section 1 has TODO comment on placeholder\n\n**Verify:** `npm run build` → exits 0, no TypeScript errors\n\n```json:metadata\n{\"files\": [\"src/app/[locale]/privacy/page.tsx\"], \"verifyCommand\": \"npm run build\", \"acceptanceCriteria\": [\"no Resend in section 3\", \"Netcup mentioned\", \"TODO on controller placeholder\"]}\n```"
+    }
+  ],
+  "lastUpdated": "2026-04-14T00:00:00.000Z"
+}

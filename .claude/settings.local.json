@@ -29,7 +29,11 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" -X POST https://snowflow.tillkosiol.de/api/auth/callback/credentials -H \"Content-Type: application/json\" -d '{\"email\":\"test@test.de\",\"password\":\"test123123\"}' 2>&1)",
       "Bash(curl -s -X POST https://snowflow.tillkosiol.de/api/auth/callback/credentials -H \"Content-Type: application/json\" -d '{\"email\":\"test@test.de\",\"password\":\"test123123\"}' -D - -o /dev/null 2>&1)",
       "Bash(grep -r \"rawQuery\\\\|$queryRaw\\\\|queryRaw\" /Users/tillkosiol/Projekte/snowflow2026/src --include=\"*.tsx\" --include=\"*.ts\" 2>/dev/null | grep -v \"node_modules\" | grep -v \".next\")",
-      "Bash(ls -la /Users/tillkosiol/Projekte/snowflow2026/src/app/\\\\[locale\\\\]/ 2>/dev/null | head -20)"
+      "Bash(ls -la /Users/tillkosiol/Projekte/snowflow2026/src/app/\\\\[locale\\\\]/ 2>/dev/null | head -20)",
+      "Bash(ls /Users/tillkosiol/Projekte/snowflow2026/src/app/[locale]/)"
     ]
+  },
+  "enabledPlugins": {
+    "superpowers-extended-cc@superpowers-extended-cc-marketplace": true
   }
 }

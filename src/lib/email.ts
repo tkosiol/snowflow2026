@@ -243,3 +243,49 @@ export async function sendBookingConfirmation(data: ConfirmationEmailData) {
     html,
   });
 }
+
+export async function sendPasswordResetEmail(
+  toEmail: string,
+  resetUrl: string
+) {
+  const html = `
+<!DOCTYPE html>
+<html lang="de">
+<head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background-color:#f4f5f7;">
+  <div style="max-width:560px;margin:40px auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+    <div style="background:linear-gradient(135deg,#04102c 0%,#1a2542 100%);padding:32px 40px;text-align:center;">
+      <h1 style="margin:0;font-size:22px;font-weight:700;color:#ffffff;">Passwort zurücksetzen</h1>
+      <p style="margin:6px 0 0;font-size:13px;color:rgba(255,255,255,0.6);">Snowflow Admin</p>
+    </div>
+    <div style="padding:36px 40px;">
+      <p style="margin:0 0 20px;font-size:15px;color:#45464d;line-height:1.7;">
+        Du hast eine Anfrage zum Zurücksetzen deines Passworts gestellt. Klicke auf den Button, um ein neues Passwort festzulegen.
+      </p>
+      <div style="text-align:center;margin:32px 0;">
+        <a href="${resetUrl}" style="display:inline-block;background:#455d94;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;">
+          Passwort zurücksetzen
+        </a>
+      </div>
+      <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;line-height:1.6;">
+        Oder kopiere diesen Link in deinen Browser:<br>
+        <span style="color:#455d94;word-break:break-all;">${resetUrl}</span>
+      </p>
+      <p style="margin:24px 0 0;font-size:13px;color:#9ca3af;">
+        Dieser Link ist <strong style="color:#45464d;">1 Stunde</strong> gültig. Falls du keine Passwort-Zurücksetzung angefordert hast, kannst du diese E-Mail ignorieren.
+      </p>
+    </div>
+    <div style="padding:20px 40px;background:#f8f9fc;border-top:1px solid #e8e9ee;text-align:center;">
+      <p style="margin:0;font-size:12px;color:#9ca3af;">Snowflow &middot; Admin-Panel</p>
+    </div>
+  </div>
+</body>
+</html>`;
+
+  await getTransporter().sendMail({
+    from: process.env.SMTP_FROM || "noreply@snowflow.de",
+    to: toEmail,
+    subject: "Snowflow Admin — Passwort zurücksetzen",
+    html,
+  });
+}

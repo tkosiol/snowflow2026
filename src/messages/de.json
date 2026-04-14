@@ -58,7 +58,9 @@
     "submitting": "Wird gesendet...",
     "success": "Deine Anfrage wurde erfolgreich gesendet! Wir melden uns bald bei dir.",
     "error": "Leider ist ein Fehler aufgetreten. Bitte versuche es erneut.",
-    "newInquiry": "Weitere Anfrage erstellen"
+    "newInquiry": "Weitere Anfrage erstellen",
+    "privacyNotice": "Mit dem Absenden stimmst du der Verarbeitung deiner Daten gemäß unserer {link} zu.",
+    "privacyLinkText": "Datenschutzerklärung"
   },
   "gallery": {
     "title": "Galerie",

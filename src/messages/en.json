@@ -58,7 +58,9 @@
     "submitting": "Submitting...",
     "success": "Your inquiry has been sent successfully! We'll get back to you soon.",
     "error": "Something went wrong. Please try again.",
-    "newInquiry": "Create another inquiry"
+    "newInquiry": "Create another inquiry",
+    "privacyNotice": "By submitting, you agree to the processing of your data in accordance with our {link}.",
+    "privacyLinkText": "Privacy Policy"
   },
   "gallery": {
     "title": "Gallery",

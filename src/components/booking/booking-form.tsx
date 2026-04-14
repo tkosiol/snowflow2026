@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { bookingSchema } from "@/lib/validations";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -371,6 +372,15 @@ export function BookingForm({ trips }: BookingFormProps) {
       <Button type="submit" className="w-full hover:bg-primary/80 transition-colors" disabled={submitting}>
         {submitting ? t("submitting") : t("submit")}
       </Button>
+      <p className="text-center text-xs text-muted-foreground">
+        {t.rich("privacyNotice", {
+          link: (chunks) => (
+            <Link href={`/${locale}/privacy`} className="underline hover:text-foreground">
+              {chunks}
+            </Link>
+          ),
+        })}
+      </p>
     </form>
   );
 }

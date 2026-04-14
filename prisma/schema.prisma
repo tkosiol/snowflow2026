@@ -13,7 +13,7 @@ model Admin {
   passwordHash     String
   name             String
   createdAt        DateTime  @default(now())
-  resetToken       String?
+  resetToken       String?   @unique
   resetTokenExpiry DateTime?
 }
 

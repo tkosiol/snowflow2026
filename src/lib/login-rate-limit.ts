@@ -1,3 +1,6 @@
+// NOTE: In-memory rate limiting — valid only for single-process (VPS/Docker) deployments.
+// On serverless platforms (Vercel, etc.) this Map resets per invocation. Replace with
+// a Redis or DB-backed counter if deploying to a stateless environment.
 const loginAttempts = new Map<string, { count: number; resetAt: number }>();
 const LOGIN_LIMIT = 5;
 const LOGIN_WINDOW_MS = 60 * 1000; // 1 minute

@@ -25,7 +25,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         if (!credentials?.email || !credentials?.password) {
-          recordFailedLogin(ip);
           return null;
         }
 

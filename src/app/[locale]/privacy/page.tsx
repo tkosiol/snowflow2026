@@ -37,6 +37,7 @@ export default async function PrivacyPage({ params }: Props) {
             <h2 className="text-xl font-bold text-[#0f1a37] mb-3" style={{ fontFamily: "var(--font-heading)" }}>
               {de ? "1. Verantwortlicher" : "1. Controller"}
             </h2>
+            {/* TODO: Fill in real name and address before going live */}
             <p>
               Snowflow<br />
               [Vor- und Nachname des Verantwortlichen]<br />
@@ -116,8 +117,8 @@ export default async function PrivacyPage({ params }: Props) {
             </h2>
             <p className="mb-2">
               {de
-                ? "Bei Eingang einer Buchungsanfrage wird eine Benachrichtigung per E-Mail an uns gesendet. Dazu werden deine Anfragedaten über den E-Mail-Dienst Resend (Resend Inc., USA) übermittelt."
-                : "When a booking inquiry is received, a notification is sent to us via email. Your inquiry data is transmitted via the email service Resend (Resend Inc., USA)."}
+                ? "Bei Eingang einer Buchungsanfrage wird eine Benachrichtigung per E-Mail an uns gesendet. Der E-Mail-Versand erfolgt über unseren eigenen Mailserver, der bei der Netcup GmbH, Daimlerstraße 25, 76185 Karlsruhe, Deutschland gehostet wird. Es findet keine Datenübermittlung in Drittländer statt."
+                : "When a booking inquiry is received, a notification is sent to us via email. Email delivery is handled via our own mail server hosted at Netcup GmbH, Daimlerstraße 25, 76185 Karlsruhe, Germany. No data is transferred to third countries."}
             </p>
             <p>
               <strong className="text-[#0f1a37]">

@@ -1,7 +1,15 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
-function getResend() {
-  return new Resend(process.env.RESEND_API_KEY);
+function getTransporter() {
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT ?? 587),
+    secure: Number(process.env.SMTP_PORT) === 465,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
 }
 
 function escapeHtml(text: string): string {
@@ -126,7 +134,7 @@ export async function sendBookingNotification(data: BookingEmailData) {
 </body>
 </html>`;
 
-  await getResend().emails.send({
+  await getTransporter().sendMail({
     from: process.env.SMTP_FROM || "noreply@snowflow.de",
     to: process.env.CONTACT_EMAIL || "info@snowflow.de",
     subject: `Neue Anfrage: ${escapeHtml(data.firstName)} ${escapeHtml(data.lastName)} - ${escapeHtml(data.tripTitle)} (${data.persons.length} Pers.)`,
@@ -228,7 +236,7 @@ export async function sendBookingConfirmation(data: ConfirmationEmailData) {
 </body>
 </html>`;
 
-  await getResend().emails.send({
+  await getTransporter().sendMail({
     from,
     to: data.email,
     subject,

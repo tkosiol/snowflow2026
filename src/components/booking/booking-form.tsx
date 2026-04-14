@@ -70,6 +70,7 @@ export function BookingForm({ trips }: BookingFormProps) {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [submitError, setSubmitError] = useState(false);
+  const [honeypot, setHoneypot] = useState("");
 
   useEffect(() => {
     if (tripSlug) {
@@ -141,7 +142,7 @@ export function BookingForm({ trips }: BookingFormProps) {
       const response = await fetch("/api/booking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(result.data),
+        body: JSON.stringify({ ...result.data, website: honeypot }),
       });
 
       if (!response.ok) throw new Error("Booking failed");
@@ -185,6 +186,17 @@ export function BookingForm({ trips }: BookingFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="mx-auto max-w-xl space-y-6">
+      {/* Honeypot — hidden from humans, filled by bots */}
+      <input
+        type="text"
+        name="website"
+        value={honeypot}
+        onChange={(e) => setHoneypot(e.target.value)}
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, width: 0 }}
+      />
       {submitError && (
         <div className="rounded-lg bg-red-50 p-4 text-sm text-red-800">
           {t("error")}

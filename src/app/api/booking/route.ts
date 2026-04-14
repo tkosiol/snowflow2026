@@ -46,6 +46,12 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
+
+    // Honeypot check — bots fill this, humans don't
+    if (body.website) {
+      return NextResponse.json({ success: true });
+    }
+
     const data = bookingSchema.parse(body);
 
     const locale = data.locale ?? "de";

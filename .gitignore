@@ -49,3 +49,4 @@ next-env.d.ts
 # local dev / project notes
 STATUS.md
 .claude/
+docs/

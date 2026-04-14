@@ -12,6 +12,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true });
     }
 
+    // CSRF guard: only accept requests from our own origin
+    const origin = request.headers.get("origin");
+    const allowedOrigin = process.env.NEXT_PUBLIC_SITE_URL || "https://www.snowflow.de";
+    if (origin && origin !== allowedOrigin) {
+      return NextResponse.json({ success: true });
+    }
+
     const admin = await prisma.admin.findUnique({ where: { email } });
 
     if (admin) {

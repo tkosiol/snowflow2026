@@ -45,23 +45,26 @@ export default function AdminLoginPage() {
     setError("");
     setLoading(true);
 
-    try {
-      await signIn("credentials", {
-        email,
-        password,
-        redirectTo: "/admin",
-      });
-    } catch {
-      const next = failedAttempts + 1;
-      setFailedAttempts(next);
-      if (next >= RATE_LIMIT_THRESHOLD) {
-        setRateLimitSeconds(RATE_LIMIT_SECONDS);
-        setFailedAttempts(0);
-      } else {
-        setError("Ungültige Anmeldedaten");
-      }
-      setLoading(false);
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (!result?.error) {
+      window.location.href = "/admin";
+      return;
     }
+
+    const next = failedAttempts + 1;
+    setFailedAttempts(next);
+    if (next >= RATE_LIMIT_THRESHOLD) {
+      setRateLimitSeconds(RATE_LIMIT_SECONDS);
+      setFailedAttempts(0);
+    } else {
+      setError("Ungültige Anmeldedaten");
+    }
+    setLoading(false);
   }
 
   const isBlocked = rateLimitSeconds > 0;

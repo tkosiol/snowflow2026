@@ -27,7 +27,7 @@ export default function AdminLoginPage() {
   const [resetSuccess, setResetSuccess] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.location.search.includes("reset=success")) {
+    if (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("reset") === "success") {
       setResetSuccess(true);
       window.history.replaceState({}, "", "/admin/login");
     }

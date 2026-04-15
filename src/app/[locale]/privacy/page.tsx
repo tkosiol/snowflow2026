@@ -37,12 +37,11 @@ export default async function PrivacyPage({ params }: Props) {
             <h2 className="text-xl font-bold text-[#0f1a37] mb-3" style={{ fontFamily: "var(--font-heading)" }}>
               {de ? "1. Verantwortlicher" : "1. Controller"}
             </h2>
-            {/* TODO: Fill in real name and address before going live */}
             <p>
-              Snowflow<br />
-              [Vor- und Nachname des Verantwortlichen]<br />
-              [Straße und Hausnummer]<br />
-              [PLZ Ort]<br />
+              Snowflow-Reisen<br />
+              Ronald Korsch<br />
+              Grunewaldstr. 27<br />
+              12165 Berlin-Steglitz<br />
               E-Mail: info@snowflow.de
             </p>
           </div>

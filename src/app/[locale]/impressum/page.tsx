@@ -38,10 +38,10 @@ export default async function ImpressumPage({ params }: Props) {
               {de ? "Angaben gemäß § 5 TMG" : "Legal Notice according to § 5 TMG"}
             </h2>
             <p>
-              Snowflow<br />
-              [Vor- und Nachname]<br />
-              [Straße und Hausnummer]<br />
-              [PLZ Ort]
+              Snowflow-Reisen<br />
+              Ronald Korsch<br />
+              Grunewaldstr. 27<br />
+              12165 Berlin-Steglitz
             </p>
           </div>
 
@@ -50,7 +50,10 @@ export default async function ImpressumPage({ params }: Props) {
             <h2 className="text-xl font-bold text-[#0f1a37] mb-3" style={{ fontFamily: "var(--font-heading)" }}>
               {de ? "Kontakt" : "Contact"}
             </h2>
-            <p>E-Mail: info@snowflow.de</p>
+            <p>
+              Tel.: 0179-1095619<br />
+              E-Mail: info@snowflow.de
+            </p>
           </div>
 
           {/* Verantwortlich */}
@@ -61,9 +64,21 @@ export default async function ImpressumPage({ params }: Props) {
                 : "Responsible for content according to § 55 Abs. 2 RStV"}
             </h2>
             <p>
-              [Vor- und Nachname]<br />
-              [Straße und Hausnummer]<br />
-              [PLZ Ort]
+              Ronald Korsch<br />
+              Grunewaldstr. 27<br />
+              12165 Berlin-Steglitz
+            </p>
+          </div>
+
+          {/* Gerichtsstand */}
+          <div>
+            <h2 className="text-xl font-bold text-[#0f1a37] mb-3" style={{ fontFamily: "var(--font-heading)" }}>
+              {de ? "Gerichtsstand" : "Place of Jurisdiction"}
+            </h2>
+            <p>
+              {de
+                ? "Amtsgericht Berlin-Schöneberg"
+                : "Local Court Berlin-Schöneberg"}
             </p>
           </div>
 
@@ -104,7 +119,7 @@ export default async function ImpressumPage({ params }: Props) {
           </div>
 
           <p className="text-sm italic text-[#45464d]">
-            {de ? "Stand: März 2026" : "Last updated: March 2026"}
+            {de ? "Stand: April 2026" : "Last updated: April 2026"}
           </p>
         </div>
       </div>

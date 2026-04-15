@@ -24,6 +24,14 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
   const [failedAttempts, setFailedAttempts] = useState(0);
   const [rateLimitSeconds, setRateLimitSeconds] = useState(0);
+  const [resetSuccess, setResetSuccess] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.location.search.includes("reset=success")) {
+      setResetSuccess(true);
+      window.history.replaceState({}, "", "/admin/login");
+    }
+  }, []);
 
   useEffect(() => {
     if (rateLimitSeconds <= 0) return;
@@ -100,6 +108,11 @@ export default function AdminLoginPage() {
                 required
               />
             </div>
+            {resetSuccess && (
+              <p className="text-sm text-green-600">
+                Passwort erfolgreich geändert. Du kannst dich jetzt einloggen.
+              </p>
+            )}
             {isBlocked && (
               <p className="text-sm text-amber-600">
                 Zu viele Versuche. Bitte warte noch {rateLimitSeconds} Sekunden.

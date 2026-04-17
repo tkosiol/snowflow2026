@@ -103,8 +103,7 @@ export default async function RootLayout({
       addressCountry: "DE",
     },
     sameAs: [
-      "https://www.instagram.com/snowflow.de",
-      "https://www.facebook.com/snowflow.de",
+      "https://www.instagram.com/snowflow__/",
     ],
   };
 

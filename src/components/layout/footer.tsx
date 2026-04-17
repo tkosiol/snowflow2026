@@ -49,22 +49,12 @@ export async function Footer() {
             <ul className="mt-4 space-y-2.5 text-sm text-background/70">
               <li>
                 <a
-                  href="#"
+                  href="https://www.instagram.com/snowflow__/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="transition-colors hover:text-background"
                 >
                   Instagram
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="transition-colors hover:text-background"
-                >
-                  Facebook
                 </a>
               </li>
             </ul>

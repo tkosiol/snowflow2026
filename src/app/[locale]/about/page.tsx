@@ -78,7 +78,7 @@ export default async function AboutPage({ params }: Props) {
                 ? "Unsere Reisen zeichnen sich durch folgende Dinge aus:"
                 : "Our trips are defined by the following:"}
             </p>
-            <ul className="space-y-1.5 mb-4">
+            <ul className="space-y-1.5 mb-4 list-disc pl-5 marker:text-[#455d94]">
               {(de
                 ? [
                     "Einfache aber gemütliche Unterkünfte — häufig direkt an der Piste",
@@ -93,8 +93,7 @@ export default async function AboutPage({ params }: Props) {
                     "A focus on freeriding off the crowded pistes — with safety and terrain knowledge as the top priority",
                   ]
               ).map((item) => (
-                <li key={item} className="flex items-start gap-2">
-                  <span className="mt-2 size-1.5 shrink-0 rounded-full bg-[#455d94]" />
+                <li key={item} className="leading-relaxed">
                   {item}
                 </li>
               ))}

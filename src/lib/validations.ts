@@ -61,7 +61,7 @@ export const tripSchema = z.object({
   bookingStatus: z.enum(bookingStatuses).optional().default("AVAILABLE"),
   departureDate: z.string().min(1),
   returnDate: z.string().min(1),
-  priceEur: z.number().int().positive(),
+  priceEur: z.number().positive(),
   destination: z.string().min(1),
   imageUrl: z.string().optional().default(""),
   translations: z.object({

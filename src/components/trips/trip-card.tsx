@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { MapPin, CalendarDays, ArrowRight } from "lucide-react";
 
@@ -24,9 +24,9 @@ export interface TripCardProps {
   };
 }
 
-function formatDate(dateString: string): string {
+function formatDate(dateString: string, locale: string): string {
   const date = new Date(dateString);
-  return date.toLocaleDateString("de-DE", {
+  return date.toLocaleDateString(locale === "en" ? "en-GB" : "de-DE", {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -35,6 +35,7 @@ function formatDate(dateString: string): string {
 
 export function TripCard({ trip }: TripCardProps) {
   const t = useTranslations("trips");
+  const locale = useLocale();
 
   return (
     <Link href={`/trips/${trip.slug}`} className="group block">
@@ -94,7 +95,7 @@ export function TripCard({ trip }: TripCardProps) {
               <p className="text-base font-bold text-[#0f1a37]">
                 {trip.priceEur}&euro;
               </p>
-              <p className="text-xs text-[#45464d]">Pro Person</p>
+              <p className="text-xs text-[#45464d]">{t("perPerson")}</p>
             </div>
           </div>
 
@@ -110,8 +111,8 @@ export function TripCard({ trip }: TripCardProps) {
           <div className="mt-1.5 flex items-center gap-1.5 text-sm text-[#45464d]">
             <CalendarDays className="size-3.5 shrink-0" />
             <span>
-              {formatDate(trip.departureDate)} &ndash;{" "}
-              {formatDate(trip.returnDate)}
+              {formatDate(trip.departureDate, locale)} &ndash;{" "}
+              {formatDate(trip.returnDate, locale)}
             </span>
           </div>
 

@@ -67,22 +67,32 @@ function PriceItemsEditor({
   items: PriceItem[];
   onChange: (items: PriceItem[]) => void;
 }) {
+  // Store raw strings so typing "19." doesn't immediately lose the dot
+  const [rawPrices, setRawPrices] = useState<string[]>(
+    () => items.map((i) => (i.price > 0 ? String(i.price) : ""))
+  );
+
   function addItem() {
+    setRawPrices((p) => [...p, ""]);
     onChange([...items, { name: "", price: 0 }]);
   }
 
   function removeItem(index: number) {
+    setRawPrices((p) => p.filter((_, i) => i !== index));
     onChange(items.filter((_, i) => i !== index));
   }
 
-  function updateItem(index: number, field: "name" | "price", value: string) {
+  function updateName(index: number, value: string) {
     const updated = [...items];
-    if (field === "price") {
-      const normalized = value.replace(",", ".");
-      updated[index] = { ...updated[index], price: parseFloat(normalized) || 0 };
-    } else {
-      updated[index] = { ...updated[index], name: value };
-    }
+    updated[index] = { ...updated[index], name: value };
+    onChange(updated);
+  }
+
+  function updatePrice(index: number, value: string) {
+    setRawPrices((p) => p.map((v, i) => (i === index ? value : v)));
+    const normalized = value.replace(",", ".");
+    const updated = [...items];
+    updated[index] = { ...updated[index], price: parseFloat(normalized) || 0 };
     onChange(updated);
   }
 
@@ -93,15 +103,16 @@ function PriceItemsEditor({
           <Input
             placeholder="z.B. Doppelzimmer"
             value={item.name}
-            onChange={(e) => updateItem(i, "name", e.target.value)}
+            onChange={(e) => updateName(i, e.target.value)}
             className="flex-1"
           />
           <div className="flex items-center gap-1">
             <Input
               placeholder="0,00"
-              value={item.price || ""}
-              onChange={(e) => updateItem(i, "price", e.target.value)}
+              value={rawPrices[i] ?? ""}
+              onChange={(e) => updatePrice(i, e.target.value)}
               className="w-24 text-right"
+              inputMode="decimal"
             />
             <span className="text-sm text-muted-foreground">&euro;</span>
           </div>
@@ -393,7 +404,7 @@ export function TripForm({ initialData, onSubmit }: TripFormProps) {
         bookingStatus,
         departureDate,
         returnDate,
-        priceEur: parseInt(priceEur, 10),
+        priceEur: parseFloat(priceEur),
         destination,
         imageUrl,
         translations: {
@@ -429,7 +440,7 @@ export function TripForm({ initialData, onSubmit }: TripFormProps) {
         <h2 className="text-lg font-semibold">Allgemein</h2>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="slug">Slug</Label>
+            <Label htmlFor="slug">Slug (URL-Pfad)</Label>
             <Input
               id="slug"
               value={slug}
@@ -498,6 +509,7 @@ export function TripForm({ initialData, onSubmit }: TripFormProps) {
             <Input
               id="priceEur"
               type="number"
+              step="0.01"
               value={priceEur}
               onChange={(e) => setPriceEur(e.target.value)}
               required

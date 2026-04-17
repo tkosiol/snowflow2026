@@ -24,7 +24,7 @@ model Trip {
   bookingStatus BookingStatus     @default(AVAILABLE)
   departureDate DateTime
   returnDate    DateTime
-  priceEur      Int
+  priceEur      Float
   destination   String
   imageUrl      String?
   createdAt     DateTime          @default(now())

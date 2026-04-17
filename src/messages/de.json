@@ -32,7 +32,8 @@
     "details": "Details ansehen",
     "statusAvailable": "Buchbar",
     "statusAlmostFull": "Fast ausgebucht",
-    "statusFull": "Ausgebucht"
+    "statusFull": "Ausgebucht",
+    "bookingTagline": "Sichere dir deinen Platz im tiefen Schnee."
   },
   "booking": {
     "title": "Buchungsanfrage",

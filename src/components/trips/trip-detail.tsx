@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { CalendarDays } from "lucide-react";
 
@@ -72,9 +72,9 @@ function AutoLinkedText({ text, className }: { text: string; className?: string 
   );
 }
 
-function formatDate(dateString: string): string {
+function formatDate(dateString: string, locale: string): string {
   const date = new Date(dateString);
-  return date.toLocaleDateString("de-DE", {
+  return date.toLocaleDateString(locale === "en" ? "en-GB" : "de-DE", {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -107,11 +107,10 @@ function SectionCard({ section }: { section: TripSection }) {
         <h2 className="mb-3 text-xl font-bold text-[#0f1a37]" style={{ fontFamily: "var(--font-heading)" }}>
           {section.title}
         </h2>
-        <ul className="space-y-2">
+        <ul className="space-y-2 list-disc pl-5 marker:text-[#455d94]">
           {items.map((item, index) => (
-            <li key={index} className="flex items-start gap-2 text-[#45464d]">
-              <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-[#455d94]" />
-              <span>{autoLink(item)}</span>
+            <li key={index} className="text-[#45464d] leading-relaxed">
+              {autoLink(item)}
             </li>
           ))}
         </ul>
@@ -154,6 +153,7 @@ function SectionCard({ section }: { section: TripSection }) {
 
 export function TripDetail({ trip }: TripDetailProps) {
   const t = useTranslations("trips");
+  const locale = useLocale();
 
   const sortedSections = [...trip.translation.sections].sort(
     (a, b) => a.position - b.position
@@ -235,7 +235,7 @@ export function TripDetail({ trip }: TripDetailProps) {
                   >
                     {trip.priceEur}&euro;
                   </span>
-                  <p className="mt-1 text-sm text-[#45464d]">Pro Person</p>
+                  <p className="mt-1 text-sm text-[#45464d]">{t("perPerson")}</p>
                 </div>
                 <span
                   className={`inline-block rounded-[0.25rem] px-4 py-2 text-xs font-semibold ${
@@ -266,7 +266,7 @@ export function TripDetail({ trip }: TripDetailProps) {
                       {t("departure")}
                     </p>
                     <p className="font-medium text-[#0f1a37]">
-                      {formatDate(trip.departureDate)}
+                      {formatDate(trip.departureDate, locale)}
                     </p>
                   </div>
                 </div>
@@ -277,7 +277,7 @@ export function TripDetail({ trip }: TripDetailProps) {
                       {t("return")}
                     </p>
                     <p className="font-medium text-[#0f1a37]">
-                      {formatDate(trip.returnDate)}
+                      {formatDate(trip.returnDate, locale)}
                     </p>
                   </div>
                 </div>
@@ -300,7 +300,7 @@ export function TripDetail({ trip }: TripDetailProps) {
                     {t("bookNow")}
                   </Link>
                   <p className="mt-4 text-center text-[10px] font-medium uppercase italic tracking-tighter text-[#45464d]">
-                    Sichere dir deinen Platz im tiefen Schnee.
+                    {t("bookingTagline")}
                   </p>
                 </>
               )}

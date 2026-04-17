@@ -32,7 +32,8 @@
     "details": "View details",
     "statusAvailable": "Available",
     "statusAlmostFull": "Almost full",
-    "statusFull": "Sold out"
+    "statusFull": "Sold out",
+    "bookingTagline": "Secure your spot on the slopes."
   },
   "booking": {
     "title": "Booking Inquiry",

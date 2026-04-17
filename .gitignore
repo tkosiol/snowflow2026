@@ -50,3 +50,6 @@ next-env.d.ts
 STATUS.md
 .claude/
 docs/
+
+# source assets (large originals, optimized versions go to public/)
+seo-image.png
